@@ -1268,6 +1268,7 @@ function applyServices() {
   document.body.classList.toggle("no-tautulli", !v.tautulli);
   document.body.classList.toggle("no-arr", !v.radarr && !v.sonarr);
   document.body.classList.toggle("has-leaving", !!S.cfg.leaving);
+  const pw = $("#pwWarn"); if (pw) pw.hidden = !S.cfg.default_password;
 }
 
 // ---------- boot ----------
