@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phlexerr</title>
+<link rel="icon" href="/static/icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/static/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="alternate icon" href="/static/icons/favicon.ico">
+<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+<link rel="manifest" href="/static/manifest.webmanifest">
+<meta name="theme-color" content="#1f2326">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Phlexerr">
+<script src="/static/theme.js"></script>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<a href="#tbl" class="skip-link">Skip to content</a>
+<header class="top">
+  <h1><img class="logo" src="/static/icons/logo.svg" alt="" width="28" height="28">Phlexerr</h1>
+  <span id="modeChip" class="chip"></span>
+  <nav class="tabs"><button class="tab active" id="tabMain" data-view="main">Prune</button><button class="tab" id="tabProt" data-view="protect">Protect</button><button class="tab" id="tabRows" data-view="rows">Plex Home Screen</button><button class="tab" id="tabHist" data-view="history">History</button><button class="tab" id="tabAct" data-view="activity">Activity<span class="tabbadge" id="actBadge" hidden aria-live="polite"></span></button><button class="tab" id="tabHelp" data-view="help">Help</button></nav>
+  <span class="grow"></span>
+  <span id="genInfo" class="muted"></span>
+  <button class="btn small" id="btnTheme" title="Switch between light and dark" aria-label="Toggle light/dark mode">◐</button>
+  <button class="btn" id="btnRefresh">Refresh data</button>
+  <button class="btn" id="btnSettings">Settings</button>
+  <div id="logoutForm"><button class="btn" type="button" id="logoutBtn">Sign out</button></div>
+</header>
+
+<main id="viewMain">
+  <div id="notices"></div>
+
+  <section class="filter-bar">
+    <div class="presets-primary">
+      <span class="lbl">Quick filters</span>
+      <button class="btn small needs-seerr" data-preset="auto">Unrequested downloads</button>
+      <button class="btn small" data-preset="never">Never watched</button>
+      <button class="btn small" data-preset="stale2">Stale 2+ years</button>
+      <button class="btn small" data-preset="lowrated">Low rated</button>
+      <button class="btn small" data-preset="big">Large files</button>
+      <button class="btn small needs-leaving" data-preset="leaving">Leaving soon</button>
+      <button class="btn small needs-leaving" data-preset="leaving_due">Past due</button>
+      <button class="btn small" id="btnAdvanced" aria-expanded="false">Advanced filters</button>
+    </div>
+    <div class="filter-pills" id="filterPills"></div>
+  </section>
+
+  <button class="btn" id="btnFilters" aria-expanded="false">Filters</button>
+  <section class="filters" id="filters" hidden>
+    <div class="filter-groups">
+      <fieldset class="filter-group">
+        <legend>Search &amp; Type</legend>
+        <label>Search <input type="text" id="fQ" placeholder="Title…"></label>
+        <label>Type
+          <select id="fType"><option value="">All</option><option value="movie">Movies</option><option value="show">TV shows</option></select>
+        </label>
+        <label>Library <select id="fLib"><option value="">All</option></select></label>
+        <label>Collection <select id="fColl"><option value="">Any</option></select></label>
+        <label class="needs-seerr">Requested by <select id="fUser"><option value="">Anyone</option></select></label>
+      </fieldset>
+      <fieldset class="filter-group">
+        <legend>Watching Activity</legend>
+        <label>Watched <select id="fWatched"><option value="">Any</option><option value="never">Never watched (nobody)</option><option value="some">Watched at least once</option></select></label>
+        <label>Not watched in (days) <input type="number" id="fStale" min="0" placeholder="e.g. 365"></label>
+        <label>Plays in 1y ≤ <input type="number" id="fPlays" min="0" placeholder="e.g. 0"></label>
+        <label>Viewed % ≤ <input type="number" id="fPct" min="0" max="100" placeholder="e.g. 50"></label>
+      </fieldset>
+      <fieldset class="filter-group">
+        <legend>Age &amp; Date</legend>
+        <label>Added over (days) ago <input type="number" id="fAge" min="0" placeholder="e.g. 365"></label>
+        <label>Added within last (days) <input type="number" id="fNew" min="0" placeholder="e.g. 30"></label>
+        <label>Released before (year) <input type="number" id="fYear" min="1850" max="2100" step="1" placeholder="e.g. 1950"></label>
+      </fieldset>
+      <fieldset class="filter-group">
+        <legend>Ratings &amp; Size</legend>
+        <label>IMDb ≤ <input type="number" id="fRating" min="0" max="10" step="0.1" placeholder="e.g. 6.5"></label>
+        <label>Unrated (no IMDb) <select id="fUnrated"><option value="">Include</option><option value="hide">Hide</option><option value="only">Only unrated</option></select></label>
+        <label class="needs-leaving">Leaving soon <select id="fLeave"><option value="">Any</option><option value="marked">Marked leaving soon</option><option value="due">Past its date</option><option value="not">Not marked</option></select></label>
+        <label>Animation <select id="fAnim"><option value="">Include</option><option value="hide">Hide animation</option><option value="only">Only animation</option></select></label>
+        <label>Size ≥ (GB) <input type="number" id="fSize" min="0" step="0.5" placeholder="e.g. 10"></label>
+      </fieldset>
+    </div>
+    <div class="filter-actions">
+      <label class="check"><input type="checkbox" id="fHideKeep" checked> Hide protected items</label>
+      <span class="grow"></span>
+      <button class="btn small" id="btnReset">Reset all</button>
+    </div>
+  </section>
+
+  <div class="summary">
+    <span><b id="sCount">0</b> <span class="muted">items shown</span></span>
+    <span><b id="sSize">0 GB</b> <span class="muted">could be freed</span></span>
+    <span class="sp"></span>
+    <label class="chk-all-card"><input type="checkbox" id="chkAll2"> Select all</label>
+    <div class="viewtog" role="group" aria-label="Layout"><button type="button" class="btn small" id="vCards" aria-pressed="true">Cards</button><button type="button" class="btn small" id="vTable" aria-pressed="false">Table</button></div>
+    <label class="msort">Sort <select id="mSort"></select></label>
+    <button class="btn small" id="btnCsv">Export view as CSV</button>
+  </div>
+
+  <div class="tablewrap" id="candWrap">
+    <table id="tbl" tabindex="-1" aria-label="Media candidates for deletion">
+      <thead><tr>
+        <th class="cb" scope="col"><input type="checkbox" id="chkAll" title="Select everything in the current view" aria-label="Select all"></th>
+        <th class="sortable" scope="col" data-sort="title" tabindex="0">Title <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable num" scope="col" data-sort="rating" tabindex="0">IMDb <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable" scope="col" data-sort="added_ts" tabindex="0">Added <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable" scope="col" data-sort="last_viewed_ts" tabindex="0">Last viewed <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable num" scope="col" data-sort="pct" tabindex="0">% viewed <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable needs-seerr" scope="col" data-sort="requested" tabindex="0">Requested by <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable num" scope="col" data-sort="plays_1y" tabindex="0">Plays (1y) <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable num" scope="col" data-sort="size" tabindex="0">Size <span class="arrow" aria-hidden="true"></span></th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="empty" hidden></div>
+  </div>
+</main>
+
+<main id="viewRows" hidden>
+  <div id="rNotice" class="notice" hidden role="status"></div>
+  <section class="panel">
+    <h2>Custom rows for the Plex home screen</h2>
+    <p class="muted">Define what belongs in a row, and Phlexerr keeps a Plex collection in sync and pins it to <b>Home</b> (like Maintainerr does). This only creates or edits collections; it never deletes media. It's separate from deletion candidates.</p>
+    <form id="wForm" class="ruleform">
+      <label class="grow">Row name <input type="text" id="wName" maxlength="100" placeholder="e.g. Classic Westerns" autocomplete="off"></label>
+      <label>Contains <select id="wMedia"><option value="both">Movies and shows</option><option value="movie">Movies only</option><option value="show">Shows only</option></select></label>
+      <label>Sort by <select id="wSort"></select></label>
+      <label id="wArrangeWrap" hidden>Your order <button class="btn" type="button" id="wArrange">Arrange titles…</button></label>
+      <label>Direction <select id="wDir"><option value="desc">High → low / newest first</option><option value="asc">Low → high / oldest first</option></select></label>
+      <label>Max items <input type="number" id="wLimit" min="1" max="500" value="50"></label>
+    </form>
+    <div class="ruleform">
+      <label>Include items matching <select id="wType"><option value="actor">Actor</option><option value="director">Director</option><option value="studio">Studio</option><option value="collection">Collection</option><option value="title">Title keyword</option><option value="genre">Genre</option><option value="tag">Tag / label</option></select></label>
+      <label class="grow">Name / keyword <input type="text" id="wPattern" autocomplete="off" placeholder="wildcards ok: Tom *, Marvel*, *Trilogy"></label>
+      <label id="wTopWrap">Top billed <input type="number" id="wTop" min="1" max="50" placeholder="all"></label>
+      <button class="btn" type="button" id="wAddCrit">Add</button>
+    </div>
+    <div id="wCrit" class="critlist"></div>
+    <div class="muted">Several criteria = an item needs to match <b>any one</b> of them. Leave empty to use only the filters below.</div>
+
+    <details class="advanced-section" id="wAdvanced">
+      <summary>List sources: IMDb / MDBList links or CSV upload</summary>
+      <div class="ruleform">
+        <label class="grow">List links (IMDb or MDBList, one per line) <textarea id="wListUrl" rows="2" autocomplete="off" placeholder="https://mdblist.com/lists/username/list-name&#10;https://www.imdb.com/list/ls123456789/"></textarea></label>
+        <label>Upload CSVs <input type="file" id="wCsv" multiple accept=".csv,text/csv,text/plain"></label>
+        <span id="wListInfo" class="muted"></span>
+      </div>
+      <div class="muted">With lists, the row holds only the titles from them (combined) that are already in Plex. Use <b>Order in the list</b> as the sort to keep IMDb's order. Private lists: export the CSV from IMDb and upload it.</div>
+    </details>
+
+    <details class="advanced-section" id="wFilters" open>
+      <summary>Filters &amp; options</summary>
+      <div class="ruleform">
+        <label>IMDb at least <input type="number" id="wRating" min="0" max="10" step="0.1" placeholder="any"></label>
+        <label>Added in last (days) <input type="number" id="wDays" min="1" max="3650" placeholder="any"></label>
+        <label class="check"><input type="checkbox" id="wUnwatched"> Never watched only</label>
+      </div>
+      <div class="ruleform">
+        <label class="check"><input type="checkbox" id="wPin" checked> Pin to Plex Home</label>
+        <label class="check"><input type="checkbox" id="wShared" checked> Also show on other users' Home screens</label>
+        <label class="check"><input type="checkbox" id="wAuto" checked> Keep in sync after each refresh</label>
+      </div>
+    </details>
+
+    <div class="form-actions">
+      <button class="btn primary" type="button" id="wSave">Save row</button>
+      <button class="btn" type="button" id="wCancel" hidden>Cancel</button>
+    </div>
+    <div id="wPreview" class="rpreview"></div>
+    <div id="wErr" class="errtxt"></div>
+  </section>
+  <div id="wProg" class="panel" hidden><div><b id="wProgName"></b> <span id="wProgStage" class="muted"></span></div><div class="progrow"><progress id="wProgBar" max="100" value="0"></progress><span id="wProgPct" class="mono"></span></div></div>
+  <div class="tablewrap">
+    <table id="wTbl" class="stackable" aria-label="Custom Plex rows">
+      <thead><tr>
+        <th scope="col">Order</th>
+        <th scope="col" data-wide>Row</th>
+        <th scope="col" data-wide>Criteria</th>
+        <th scope="col" class="num">Items</th>
+        <th scope="col" data-wide>Plex</th>
+        <th scope="col" data-wide data-nolabel>Actions</th>
+      </tr></thead>
+      <tbody id="wList"></tbody>
+    </table>
+    <div id="wEmpty" class="empty" hidden>No rows yet. Build one above, save it, then press <b>Publish to Plex</b>.</div>
+  </div>
+</main>
+
+<main id="viewProt" hidden>
+  <div class="stats" id="pStats"></div>
+  <section class="panel">
+    <h2>Protect media from deletion</h2>
+    <p class="muted">Anything matching an enabled rule (or marked Keep) is locked: it can't be selected for deletion, and the server refuses to delete it even if asked. Matching ignores case and accents.</p>
+    <form id="rForm" class="ruleform">
+      <label>Protect by <select id="rType"><option value="actor">Actor</option><option value="director">Director</option><option value="studio">Studio</option><option value="collection">Collection</option><option value="title">Title keyword</option><option value="genre">Genre</option><option value="tag">Tag / label</option><option value="library">Library</option></select></label>
+      <label class="grow" id="rLibWrap" hidden>Library <select id="rLib"></select></label>
+      <label class="grow" id="rPatWrap">Name / keyword <input type="text" id="rPattern" autocomplete="off" placeholder="e.g. Tom Hanks, Marvel*, *Trilogy, christmas"></label>
+      <label id="rTopWrap">Top billed only <input type="number" id="rTop" min="1" max="50" placeholder="all cast"></label>
+      <label class="grow">Note (optional) <input type="text" id="rNote" maxlength="200" placeholder="Why?"></label>
+      <button class="btn primary" type="submit">Add rule</button>
+      <button class="btn" type="button" id="rCancel" hidden>Cancel</button>
+    </form>
+    <div class="muted" id="rHelp"></div>
+    <div id="rPreview" class="rpreview"></div>
+    <div id="rErr" class="errtxt"></div>
+  </section>
+  <div class="tablewrap">
+    <table id="rTbl" class="stackable" aria-label="Protection rules">
+      <thead><tr>
+        <th class="sortable" scope="col" data-psort="enabled" data-cbcol tabindex="0">On <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable" scope="col" data-psort="type" tabindex="0">Type <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable" scope="col" data-psort="pattern" data-wide tabindex="0">Rule <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable num" scope="col" data-psort="matches" tabindex="0">Protects <span class="arrow" aria-hidden="true"></span></th>
+        <th class="sortable num" scope="col" data-psort="size" tabindex="0">Disk <span class="arrow" aria-hidden="true"></span></th>
+        <th scope="col" data-wide data-nolabel>Actions</th>
+      </tr></thead>
+      <tbody id="rList"></tbody>
+    </table>
+    <div id="rEmpty" class="empty" hidden>No rules yet. Add one above.</div>
+  </div>
+</main>
+
+<main id="viewHelp" hidden>
+  <div class="panel help">
+    <h2>Help &amp; feature guide</h2>
+    <p class="dim">Everything Phlexerr does, in one place. Type to search; click a heading to expand it.</p>
+    <input type="search" id="helpQ" placeholder="Search help (e.g. protect, IMDb, request, animation)…" aria-label="Search help">
+    <div id="helpNone" class="dim" hidden>Nothing matches that search.</div>
+    <nav class="help-toc" id="helpToc" aria-label="Help sections">
+      <a href="#help-start">Getting started</a>
+      <a href="#help-safety">Safety</a>
+      <a href="#help-prune">Prune</a>
+      <a href="#help-leaving">Leaving Soon</a>
+      <a href="#help-protect">Protect</a>
+      <a href="#help-plex">Plex Home Screen</a>
+      <a href="#help-lists">Lists</a>
+      <a href="#help-missing">Missing</a>
+      <a href="#help-history">History</a>
+      <a href="#help-activity">Activity</a>
+      <a href="#help-settings">Settings</a>
+      <a href="#help-faq">FAQ</a>
+    </nav>
+
+    <details class="hs" open id="help-start"><summary>Getting started: what this app is</summary>
+      <p class="dim">Phlexerr is pronounced <b>“flex-er”</b>.</p>
+      <p>Phlexerr looks at your Plex library together with <dfn class="term" title="Tautulli: tracks who watched what and when">Tautulli</dfn>, <dfn class="term" title="Radarr: manages your movie library">Radarr</dfn>, <dfn class="term" title="Sonarr: manages your TV show library">Sonarr</dfn> and <dfn class="term" title="Seerr/Overseerr/Jellyseerr: handles media requests from users">Seerr</dfn>, and lists titles that are good candidates to delete: unwatched, old, low-rated, big, or downloaded without anyone requesting them. <b>You stay in control</b>: you review the list and decide what goes, and nothing is ever deleted on a schedule or by itself. It also protects media you want to keep, builds custom rows for the Plex Home Screen, and shows who is watching what.</p>
+      <ul>
+        <li><b>Prune</b>: review the list and delete. <b>Protect</b>: lock things from deletion. <b>Plex Home Screen</b>: custom rows and lists. <b>History</b>: everything that was deleted, and what it freed. <b>Activity</b>: who is watching right now, and watch history.</li>
+        <li>Data is read when you press <b>Refresh data</b> (and cached, so the page loads fast). Nothing changes in Plex until you delete or publish a row.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-safety"><summary>Safety: will it delete things by accident?</summary>
+      <ul>
+        <li><b>Dry run is the default.</b> While <code>DRY_RUN=true</code> <dfn class="term" title="Environment variable that prevents real deletions when set to true">(simulation mode)</dfn> nothing is deleted; you just see what would happen. It can only be switched in the container settings, not from the web page.</li>
+        <li>A real delete needs you to type <b>DELETE</b> in a dialog that lists every title and the space freed.</li>
+        <li>Protected and Keep items can't be selected, and the server refuses to delete them even if asked.</li>
+        <li>There is a batch limit (<code>MAX_DELETE_BATCH</code>, default 200). Every attempt, dry or live, is logged.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-prune"><summary>Prune: filtering, sorting and deleting</summary>
+      <ul>
+        <li><b>Filters</b>: search text, type, library, requester, rating, year, size, watched state, "not watched in X days", "added within last X days", and <b>Animation</b> (include / hide / only). <b>Reset</b> clears them all.</li>
+        <li><b>Quick filters</b> apply common combinations in one click: <b>Unrequested downloads</b> (recently added, nobody requested it in Seerr, nobody has watched it; adjust the two day values to taste), <b>Never watched</b>, <b>Stale 2+ years</b>, <b>Low rated</b> and <b>Large files</b>. <b>Advanced filters</b> opens the full set.</li>
+        <li>Switch between <b>Cards</b> and <b>Table</b> above the list (your choice is remembered). In the table, click a column header to sort; in cards, use the Sort dropdown. On a phone the filters fold behind a Filters button.</li>
+        <li>The ⓘ icon opens details with <b>Open in Plex</b> and <b>IMDb</b> buttons. A 🎨 badge marks animation.</li>
+        <li>Tick titles (or use select-all on the filtered list), then <b>Delete</b>. It removes the files via Radarr/Sonarr, clears the Seerr request so the title can be requested again, and writes to History.</li>
+        <li><b>Mark Keep</b> protects the selected titles and hides them from the list (untick <i>Hide protected items</i> in Advanced filters to see them).</li>
+        <li><b>Export view as CSV</b> saves whatever the list currently shows.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-leaving"><summary>Leaving Soon: warn people before you delete (optional)</summary>
+      <ul>
+        <li><b>Off by default.</b> If you just delete things, leave it off: there is no Leaving Soon row in Plex and no Leaving Soon buttons here. Turn it on in <b>Settings → Leaving Soon</b>.</li>
+        <li>When it is on, tick titles in <b>Prune</b> and press <b>Leaving soon</b>. They get a ⏳ badge with a due date and appear in a <b>Leaving Soon</b> row on your Plex Home, so people can watch them first. <b>Not leaving</b> takes them back out. Protected titles can't be marked.</li>
+        <li><b>Nothing is deleted automatically.</b> When the date passes the badge turns to <i>Past due</i> and the title simply stays until you delete it. Use the <b>Past due</b> quick filter to find them, select them and delete in one go.</li>
+        <li>Turning the feature off removes the row from Plex Home. Your marks are kept, so turning it back on restores the row. Deleting a title (or it disappearing from Plex) clears its mark.</li>
+        <li>In Settings you can rename the row, set the default number of days, and choose whether it is pinned to Home.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-protect"><summary>Protect: rules and scorecard</summary>
+      <ul>
+        <li>Anything matching an <b>enabled rule</b> (or marked Keep) is locked. Rule types: actor, director, studio, collection, title, genre, tag, and <b>Library</b> (pick from a dropdown).</li>
+        <li>Matching ignores case and accents, and supports <dfn class="term" title="Wildcards: special characters that match multiple items">wildcards</dfn>: <code>*</code> for any text, <code>?</code> for one character. Example: <code>Star Trek*</code>.</li>
+        <li><b>Preview</b> next to a rule lists exactly what it protects, with total disk size and per-title sizes. Disk size is also shown for every rule without clicking.</li>
+        <li>The scorecard shows protected disk space, how much of that was never watched, and the rules vs Keep split. Click column headers to sort rules.</li>
+        <li>Toggle a rule off to stop protecting without deleting it.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-plex"><summary>Plex Home Screen: custom rows</summary>
+      <ul>
+        <li>A row is a Plex collection that Phlexerr builds from your library and pins to the Home screen, then <b>keeps up to date automatically</b>.</li>
+        <li><b>Criteria</b>: genre, tag/label, collection, actor, studio and so on, plus minimum IMDb rating, "added within X days", "unwatched only", and a limit.</li>
+        <li><b>Sorting</b>: date added, rating, year, release date, play count, last watched, title, shuffle, list order, or <b>My own order</b>, each ascending or descending.</li>
+        <li><b>Shared Home</b>: show the row on every user's Home (your Home users and shared users alike). Use ↑ / ↓ to set the order of all rows.</li>
+        <li><b>Publish</b> runs in the background with a progress bar. The built-in <b>Released on this day</b> row is listed in the table too.</li>
+        <li><b>My own order</b> opens an <b>Arrange</b> dialog: drag or move titles into your own sequence (handy for things like a Marvel timeline that isn't release order).</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-lists"><summary>Lists from IMDb and MDBList</summary>
+      <ul>
+        <li>Paste one or more list links, or upload a CSV, and the row contains only the titles from those lists that <b>you already have in Plex</b>. Multiple lists are combined as a union.</li>
+        <li><b>IMDb</b> sometimes blocks automated downloads (you may see HTTP 202). If so, export the list from IMDb and upload the CSV, or use a <b>mdblist.com</b> link instead. MDBList lists work without logging in; an optional <code>MDBLIST_API_KEY</code> helps with private lists.</li>
+        <li>Lists are cached, so repeated syncs are quick.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-missing"><summary>Missing titles: request what you don't have</summary>
+      <ul>
+        <li>On a list row, <b>Missing…</b> shows list titles that aren't in Plex. Each is checked against Seerr and marked <i>Not requested</i>, <i>Already requested</i>, <i>Already available</i> or <i>Can't match</i>.</li>
+        <li>Columns: poster thumbnail, release date, rating (IMDb/MDBList or Seerr), Seerr status. Default sort is release date, newest first; filter by text, status, type, minimum rating and <b>Animation</b>, and sort by any column.</li>
+        <li>Tick the ones you want and <b>Request</b>. Up to 50 per batch. A title is requested only when the title and year match exactly, so you don't get the wrong movie.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-history"><summary>History, restore and re-request</summary>
+      <ul>
+        <li>History lists every deletion with size, requester, mode (dry/live) and result. Choose 25 / 50 / 100 / 250 / All per page (remembered).</li>
+        <li>Totals show space freed. Old entries get IMDb links filled in over time.</li>
+        <li>A deleted title can be <b>re-requested</b> through Seerr. If a title comes back later, the app detects it.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-activity"><summary>Activity: who is watching what</summary>
+      <p>The Activity tab shows what is streaming right now in a Tautulli-style card (poster, product, player, quality, stream, container, video, audio, subtitle, location, bandwidth, end time; it updates by itself every 5 seconds and the progress bar moves in between, no refresh needed) and a searchable list of recent plays you can filter by user and type. It reads from Tautulli, so it needs the Tautulli URL and API key in Settings. The Stop button on a stream asks for confirmation and lets you send the viewer a message before ending playback. Everything else on this tab is read-only.</p>
+    </details>
+
+    <details class="hs" id="help-settings"><summary>Settings, look and feel, phones</summary>
+      <ul>
+        <li>The ☾/☀ button switches light/dark (follows your OS until you choose).</li>
+        <li><b>Settings</b> holds the service connections, the automatic refresh, the <b>Released on this day</b> row and the optional <b>Leaving Soon</b> row; <b>Sign out</b> ends your session (when a password is set).</li>
+        <li>On phones tables become cards. You can install the site as an app (Add to Home Screen); this needs HTTPS, e.g. a Cloudflare tunnel.</li>
+      </ul>
+    </details>
+
+    <details class="hs" id="help-faq"><summary>FAQ</summary>
+      <dl>
+        <dt>"Never watched": whose watching counts?</dt>
+        <dd>Everyone's, from <dfn class="term" title="Tautulli: tracks who watched what and when">Tautulli</dfn> history. Without Tautulli it falls back to the single Plex account.</dd>
+        <dt>Why is a title I expected missing from Prune?</dt>
+        <dd>It may be protected (a Protect rule or Keep) or hidden by a filter. Check the Protect tab and press Reset on the filters.</dd>
+        <dt>I deleted something by mistake. Can I get it back?</dt>
+        <dd>Files are removed, so no undelete, but History lets you re-request it through Seerr.</dd>
+        <dt>Why did a list sync fail?</dt>
+        <dd>The row shows the error. IMDb blocking is the usual cause; use a CSV upload or MDBList.</dd>
+        <dt>My row isn't on the Home screen.</dt>
+        <dd>Publish it, and make sure it's pinned. Users may need to refresh Plex; check "Shared Home" for other users.</dd>
+        <dt>Posters in the Missing list are blank.</dd>
+        <dd>The title hasn't been checked in Seerr yet or couldn't be matched. The server also needs outbound access to image.tmdb.org.</dd>
+        <dt>Which services do I need?</dt>
+        <dd>Only Plex. Tautulli, Radarr, Sonarr and Seerr are optional. Without Tautulli the play data comes from Plex itself and the Activity tab asks you to connect it. Without Radarr/Sonarr titles are deleted through Plex. Without Seerr the "requested by" details are hidden and the Missing list can't make requests. Add any of them later in Settings.</dd>
+        <dt>How do I update the app?</dt>
+        <dd>Drop <code>phlexerr.zip</code> into the appdata folder and run <code>update.sh</code> (or, with the ready-made image, use Unraid's Check for updates). Your settings and data in /config are kept. Hard-refresh the browser afterwards.</dd>
+      </dl>
+    </details>
+  </div>
+</main>
+<main id="viewAct" hidden>
+  <section class="panel" id="aSetup">
+    <h2>Activity needs Tautulli</h2>
+    <p>This tab shows who is watching right now and a full watch history, using Tautulli. Add your Tautulli URL and API key in Settings and it will light up. Nothing else in Phlexerr depends on it.</p>
+    <p><button class="btn primary" type="button" id="aSetupBtn">Open Settings</button></p>
+  </section>
+  <div id="aNotice" class="notice" hidden role="status"></div>
+  <section class="panel">
+    <h2>Now playing</h2><div class="muted" id="aNowMeta"></div>
+    <div id="aNow" class="nowgrid"></div>
+    <div id="aNowEmpty" class="empty" hidden>Nobody is watching right now.</div>
+  </section>
+  <section class="filters">
+    <div class="row">
+      <label>Show <select id="aLen"><option>10</option><option selected>25</option><option>50</option><option>100</option></select> entries per page</label>
+      <label>User <select id="aUser"><option value="">Anyone</option></select></label>
+      <label>Type <select id="aType"><option value="">All</option><option value="movie">Movies</option><option value="episode">TV episodes</option></select></label>
+      <span class="grow"></span>
+      <label>Search <input type="text" id="aQ" placeholder="Title…"></label><button class="btn small" id="aQx" title="Clear search" aria-label="Clear search">✕</button>
+    </div>
+  </section>
+  <div class="summary"><span><b id="aCount">0</b> <span class="muted">plays shown</span> <span class="muted" id="aTotal"></span></span></div>
+  <div class="tablewrap">
+    <table id="aTbl" class="stackable" aria-label="Watch history"><thead><tr>
+      <th scope="col">Date</th><th scope="col">User</th><th scope="col">IP Address</th><th scope="col">Platform</th><th scope="col">Product</th><th scope="col">Player</th>
+      <th scope="col" data-wide>Title</th><th scope="col">Started</th><th scope="col">Paused</th><th scope="col">Stopped</th><th scope="col">Duration</th><th scope="col" data-nolabel>Watched</th>
+    </tr></thead><tbody id="aRows"></tbody></table>
+    <div id="aEmpty" class="empty" hidden>No plays match.</div>
+  </div>
+  <div class="pager"><button class="btn small" id="aMore" hidden>Load more</button></div>
+</main>
+<main id="viewHist" hidden>
+  <div id="hNotice" class="notice" hidden role="status"></div>
+  <div class="stats" id="hStats"></div>
+  <div class="two">
+    <section class="panel"><h2>Space freed by month</h2><div id="hChart"></div></section>
+    <section class="panel"><h2>Biggest deletions</h2><div id="hTop"></div></section>
+  </div>
+  <section class="filters">
+    <div class="row">
+      <label>Show <select id="hMode"><option value="live">Real deletions</option><option value="restored">Back in Plex again</option><option value="dry">Dry runs</option><option value="skipped">Skipped / failed</option><option value="all">Everything</option></select></label>
+      <label class="needs-seerr">Requested by <select id="hUser"><option value="">Anyone</option></select></label>
+      <label>Search <input type="text" id="hQ" placeholder="Title…"></label>
+      <label class="check"><input type="checkbox" id="hAsUser"> Re-request as the original requester</label>
+      <span class="grow"></span>
+      <button class="btn small" id="hCsv">Export as CSV</button>
+    </div>
+  </section>
+  <div class="summary"><span><b id="hCount">0</b> <span class="muted">entries shown</span></span><span><b id="hSize">0 GB</b> <span class="muted">in this view</span></span></div>
+  <div class="tablewrap">
+    <table id="hTbl" class="stackable" aria-label="Deletion history"><thead><tr>
+      <th class="sortable" scope="col" data-sort="time" tabindex="0">When <span class="arrow" aria-hidden="true"></span></th>
+      <th class="sortable" scope="col" data-sort="title" data-wide tabindex="0">Title <span class="arrow" aria-hidden="true"></span></th>
+      <th scope="col">Library</th>
+      <th scope="col" class="needs-seerr">Requested by</th>
+      <th class="sortable num" scope="col" data-sort="size" tabindex="0">Size <span class="arrow" aria-hidden="true"></span></th>
+      <th scope="col">Mode</th>
+      <th scope="col">Result</th>
+      <th scope="col" title="Re-request this title through Overseerr/Jellyseerr">Seerr</th>
+      <th scope="col" data-wide>Details</th>
+    </tr></thead><tbody id="hRows"></tbody></table>
+    <div id="hEmpty" class="empty" hidden>Deletions will appear here after you delete items from the Prune screen.</div>
+  </div>
+  <div class="pager" id="hPager">
+    <label>Per page <select id="hSize2"><option>25</option><option>50</option><option>100</option><option>250</option><option value="0">All</option></select></label>
+    <span class="grow"></span>
+    <span id="hPageInfo" class="muted"></span>
+    <button class="btn small" id="hPrev">‹ Prev</button><button class="btn small" id="hNext">Next ›</button>
+  </div>
+</main>
+
+<div id="selbar" hidden>
+  <span class="info"><b id="selCount">0</b> selected · <b id="selSize">0 GB</b></span>
+  <button class="btn small" id="btnClearSel">Clear</button>
+  <button class="btn small" id="btnKeep">Mark Keep</button>
+  <button class="btn small needs-leaving" id="btnLeave" title="Show these in the Leaving Soon row in Plex. Nothing is deleted.">Leaving soon</button>
+  <button class="btn small needs-leaving" id="btnUnleave" title="Take these out of the Leaving Soon row" hidden>Not leaving</button>
+  <button class="btn danger" id="btnDelete">Delete…</button>
+</div>
+
+<dialog id="dlgStop"><div class="hd">Stop this stream?</div><div class="bd">
+  <p id="stopWho"></p>
+  <label>Message shown to the viewer (optional)<input type="text" id="stopMsg" maxlength="200" placeholder="e.g. The server is restarting - back in 10 minutes" autocomplete="off"></label>
+  <div class="notice err" id="stopErr" hidden></div>
+</div><div class="ft"><span class="grow"></span><button class="btn" id="stopCancel">Cancel</button><button class="btn danger" id="stopGo">Stop stream</button></div></dialog>
+<dialog id="dlgDelete"><div class="hd" id="delTitle"></div><div class="bd" id="delBody"></div><div class="ft" id="delFoot"></div></dialog>
+<dialog id="dlgOrder"><div class="hd">Arrange titles</div><div class="bd">
+  <p class="muted">Drag a title, use ↑ ↓, or type a position number. Titles you haven't placed yet (new ones) go at the end, oldest release first.</p>
+  <div class="ruleform">
+    <label class="grow">Find <input type="text" id="oFilter" placeholder="Filter titles…" autocomplete="off"></label>
+    <button class="btn small" type="button" id="oByRelease">Start from release date</button>
+    <button class="btn small" type="button" id="oByTitle">A–Z</button>
+    <button class="btn small" type="button" id="oReverse">Reverse</button>
+  </div>
+  <ol id="oList" class="orderlist"></ol>
+</div><div class="ft"><span class="grow muted" id="oCount"></span><button class="btn" type="button" id="oCancel">Cancel</button><button class="btn primary" type="button" id="oSave">Use this order</button></div></dialog>
+<dialog id="dlgMissing" class="wide"><div class="hd" id="mTitle">Not in Plex yet</div><div class="bd">
+  <p class="muted" id="mSummary"></p>
+  <div id="mNotice" class="notice" hidden></div>
+  <div class="ruleform">
+    <label class="grow">Find <input type="text" id="mQ" placeholder="Title…" autocomplete="off"></label>
+    <label>Show <select id="mStatus"><option value="">Everything</option><option value="none">Can be requested</option><option value="requested">Already requested</option><option value="available">Already available</option><option value="unmatched">Can't match</option></select></label>
+    <label>Type <select id="mType"><option value="">Movies and shows</option><option value="movie">Movies</option><option value="show">Shows</option></select></label>
+    <label>Animation <select id="mAnim"><option value="">Include</option><option value="hide">Hide animation</option><option value="only">Only animation</option></select></label>
+    <label>Rating at least <input type="number" id="mRate" min="0" max="10" step="0.1" placeholder="any"></label>
+    <label>Sort <select id="mvSort"><option value="released">Release date</option><option value="rating">Rating</option><option value="title">Title</option><option value="list">Order in the list</option></select></label>
+    <label>Direction <select id="mvDir"><option value="desc">High → low / newest first</option><option value="asc">Low → high / oldest first</option></select></label>
+  </div>
+  <div class="ruleform"><label class="check"><input type="checkbox" id="mAll"> Select every title shown that can be requested</label><span class="grow"></span><span class="muted" id="mCheck"></span></div>
+  <table id="mTbl" class="mtable stackable"><thead><tr><th data-cbcol data-nolabel></th><th data-wide data-nolabel>Title</th><th>Released</th><th class="num">Rating</th><th>Seerr</th></tr></thead><tbody id="mRows"></tbody></table>
+  <div id="mEmpty" class="empty" hidden>Nothing matches these filters.</div>
+  <div id="mProg" hidden><div><b id="mProgStage"></b></div><div class="progrow"><progress id="mProgBar" max="100" value="0"></progress><span id="mProgPct" class="mono"></span></div></div>
+  <div id="mResult"></div>
+</div><div class="ft"><span class="grow muted" id="mSel">Nothing selected</span><button class="btn" type="button" id="mClose">Close</button><button class="btn primary" type="button" id="mRequest" disabled>Request in Seerr</button></div></dialog>
+<dialog id="dlgSettings"><div class="hd">Settings</div><div class="bd" id="setBody"></div><div class="ft" id="setFoot"></div></dialog>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

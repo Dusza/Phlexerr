@@ -1,0 +1,12 @@
+   # Always use LF line endings, on every computer
+   * text=auto eol=lf
+
+   # Never touch binary files
+   *.png binary
+   *.jpg binary
+   *.jpeg binary
+   *.webp binary
+   *.gif binary
+   *.ico binary
+   *.woff binary
+   *.woff2 binary

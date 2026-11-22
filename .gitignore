@@ -1,0 +1,16 @@
+# Never commit secrets or your own data
+.env
+data/
+*.log
+settings.json
+protection.json
+deletions.log
+# Python / tooling
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.zip
+*.bak
+.DS_Store
+update.sh

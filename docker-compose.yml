@@ -1,0 +1,12 @@
+services:
+  phlexerr:
+    build: .
+    image: phlexerr:latest
+    container_name: phlexerr
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file: .env
+    volumes:
+      - ./data:/config     # on Unraid: /mnt/user/appdata/phlexerr/data
+      - ./app:/srv/app:ro  # lets you update by replacing ./app and restarting (no rebuild)

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Phlexerr</Name>
+  <Repository>ghcr.io/YOUR-GITHUB-USERNAME/phlexerr:latest</Repository>
+  <Registry/>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/YOUR-GITHUB-USERNAME/phlexerr/issues</Support>
+  <Project>https://github.com/YOUR-GITHUB-USERNAME/phlexerr</Project>
+  <TemplateURL>https://raw.githubusercontent.com/YOUR-GITHUB-USERNAME/phlexerr/main/Phlexerr.xml</TemplateURL>
+  <Overview>Review Plex movies and TV shows as deletion candidates (IMDb rating, date added, last viewed, % viewed, requested by, plays in the past year, size) and bulk-delete them, optionally also removing them from Radarr, Sonarr and Seerr. Starts in dry-run mode.</Overview>
+  <Category>MediaApp:Other Tools:</Category>
+  <WebUI>http://[IP]:[PORT:8080]/</WebUI>
+  <Icon>https://raw.githubusercontent.com/YOUR-GITHUB-USERNAME/phlexerr/main/app/static/icons/icon-512.png</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+
+  <Config Name="Web UI Port" Target="8080" Default="8080" Mode="tcp" Description="Port for the web interface" Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+  <Config Name="Config / data" Target="/config" Default="/mnt/user/appdata/phlexerr/data" Mode="rw" Description="Stores the report cache, keep-list and deletion log" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/phlexerr/data</Config>
+
+  <Config Name="App password" Target="APP_PASSWORD" Default="" Mode="" Description="Password for signing in to this web UI (required)" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="DRY_RUN" Target="DRY_RUN" Default="true" Mode="" Description="true = nothing is ever deleted, you only get a report of what would happen. Set to false to enable real deletion." Type="Variable" Display="always" Required="true" Mask="false">true</Config>
+
+  <Config Name="Plex URL" Target="PLEX_URL" Default="http://192.168.1.10:32400" Mode="" Description="e.g. http://SERVER-IP:32400 (optional here: you can also enter it in the web UI Settings page)" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Plex token" Target="PLEX_TOKEN" Default="" Mode="" Description="Optional here (or use the web UI Settings page). X-Plex-Token. Plex web app > any item > ... > Get Info > View XML > copy X-Plex-Token from the URL" Type="Variable" Display="always" Required="false" Mask="true"/>
+
+  <Config Name="Tautulli URL" Target="TAUTULLI_URL" Default="http://192.168.1.10:8181" Mode="" Description="e.g. http://SERVER-IP:8181" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Tautulli API key" Target="TAUTULLI_API_KEY" Default="" Mode="" Description="Tautulli > Settings > Web Interface > API key" Type="Variable" Display="always" Required="false" Mask="true"/>
+
+  <Config Name="Radarr URL" Target="RADARR_URL" Default="http://192.168.1.10:7878" Mode="" Description="e.g. http://SERVER-IP:7878" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Radarr API key" Target="RADARR_API_KEY" Default="" Mode="" Description="Radarr > Settings > General > API key" Type="Variable" Display="always" Required="false" Mask="true"/>
+
+  <Config Name="Sonarr URL" Target="SONARR_URL" Default="http://192.168.1.10:8989" Mode="" Description="e.g. http://SERVER-IP:8989" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="Sonarr API key" Target="SONARR_API_KEY" Default="" Mode="" Description="Sonarr > Settings > General > API key" Type="Variable" Display="always" Required="false" Mask="true"/>
+
+  <Config Name="Seerr URL" Target="SEERR_URL" Default="http://192.168.1.10:5055" Mode="" Description="Overseerr / Jellyseerr / Seerr, e.g. http://SERVER-IP:5055" Type="Variable" Display="always" Required="false" Mask="false"/>
+  <Config Name="MDBList API key (optional)" Target="MDBLIST_API_KEY" Default="" Mode="" Description="Only needed for MDBList lists that are not public (mdblist.com/preferences)" Type="Variable" Display="advanced" Required="false" Mask="true"/>
+  <Config Name="Seerr API key" Target="SEERR_API_KEY" Default="" Mode="" Description="Seerr > Settings > General > API key" Type="Variable" Display="always" Required="false" Mask="true"/>
+
+  <Config Name="Plex link base (optional)" Target="PLEX_LINK_BASE" Default="" Mode="" Description="Where title/poster links open. Blank = https://app.plex.tv/desktop. Can also be set in Settings." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="Plex libraries (optional)" Target="PLEX_LIBRARIES" Default="" Mode="" Description="Comma-separated library names to include. Blank = all movie and TV libraries." Type="Variable" Display="advanced" Required="false" Mask="false"/>
+  <Config Name="Secure cookie (HTTPS)" Target="COOKIE_SECURE" Default="false" Mode="" Description="Set true when reached over HTTPS, e.g. through a Cloudflare tunnel" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="Trust proxy headers" Target="TRUST_PROXY" Default="false" Mode="" Description="Set true behind Cloudflare/reverse proxy so the real client IP is used for login throttling" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+</Container>
