@@ -20,6 +20,9 @@ def _i(name, default):
         return default
 
 
+DEFAULT_PASSWORD = "obiwan"   # used only when APP_PASSWORD is not set, so a first install works straight away
+
+
 class Config:
     def __init__(self):
         # Services (Plex is required; the rest are optional but recommended)
@@ -54,7 +57,8 @@ class Config:
         self.mdblist_key = _s("MDBLIST_API_KEY")        # optional: only needed if a list isn't reachable publicly
 
         # Web app / auth
-        self.app_password = _s("APP_PASSWORD")
+        self.app_password = _s("APP_PASSWORD") or ("" if _b("AUTH_DISABLED", False) else DEFAULT_PASSWORD)
+        self.default_password = self.app_password == DEFAULT_PASSWORD   # quick-start default; the UI nags until it is changed
         self.auth_disabled = _b("AUTH_DISABLED", False)
         self.secret_key = _s("SECRET_KEY")
         self.cookie_secure = _b("COOKIE_SECURE", False)  # set true behind HTTPS (Cloudflare tunnel)

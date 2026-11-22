@@ -59,7 +59,7 @@ These tools overlap a little but solve different problems. Pick by what you want
 | What | Why | Where it goes |
 |---|---|---|
 | **Docker** | Phlexerr runs as a container | Unraid already has it |
-| **An app password** you choose | Protects the web page | Container setting `APP_PASSWORD` |
+| **An app password** | Protects the web page | Container setting `APP_PASSWORD`. **Default: `obiwan`** (see below) |
 | **A folder for its data** | Keeps your settings and history between updates | Mapped to `/config` (the template does this for you) |
 | **Plex URL and Plex token** | The library it works on | Settings page (or container settings) |
 
@@ -76,20 +76,20 @@ You don't need to fill in anything optional up front. **DRY_RUN** is also a cont
 
 ## Install
 
-Pick one. Replace `YOUR-GITHUB-USERNAME` with the account that publishes the image (the maintainer's GitHub name).
+Pick one.
 
 ### Unraid (ready-made image)
 
 1. Download `Phlexerr.xml` from this repository and copy it to `/boot/config/plugins/dockerMan/templates-user/` on your server.
 2. Docker tab, **Add Container**, pick **phlexerr** from the template dropdown.
-3. Set an **App password** (you choose it) and leave **DRY_RUN** as `true`. That is all the container needs. Plex and the optional services are entered on the web page next. Click **Apply**.
+3. Leave **DRY_RUN** as `true`. The **App password** is pre-filled with the default, `obiwan`, so you can just click Apply to get started. **Change it** before anyone else can reach the page. That is all the container needs. Plex and the optional services are entered on the web page next. Click **Apply**.
 4. Open `http://YOUR-SERVER-IP:8080`, sign in, and Phlexerr will ask for your Plex details.
 
 ### Docker Compose
 
 ```
-git clone https://github.com/YOUR-GITHUB-USERNAME/phlexerr.git && cd phlexerr
-cp .env.example .env        # set APP_PASSWORD at minimum
+git clone https://github.com/Dusza/Phlexerr.git && cd phlexerr
+cp .env.example .env        # optional: set APP_PASSWORD (default is obiwan)
 docker compose up -d --build
 ```
 Open `http://localhost:8080`. Your settings are stored in `./data`.
@@ -98,8 +98,8 @@ Open `http://localhost:8080`. Your settings are stored in `./data`.
 
 ```
 docker run -d --name phlexerr --restart unless-stopped -p 8080:8080 \
-  -e APP_PASSWORD='choose-a-password' -e DRY_RUN=true \
-  -v /path/to/phlexerr-data:/config ghcr.io/YOUR-GITHUB-USERNAME/phlexerr:latest
+  -e APP_PASSWORD='choose-a-password' -e DRY_RUN=true   # leave APP_PASSWORD out to use the default, obiwan \
+  -v /path/to/phlexerr-data:/config ghcr.io/dusza/phlexerr:latest
 ```
 The container runs as user `99:100`. If the data folder isn't writable, run `chown 99:100 /path/to/phlexerr-data`.
 
@@ -112,7 +112,7 @@ Then use `phlexerr:latest` as the image name in the commands above (on Unraid, e
 
 ## First-run setup
 
-1. Open the web page and sign in with your app password.
+1. Open the web page and sign in. If you didn't set one, the password is **`obiwan`**.
 2. Click **Settings** and enter the **Plex URL and token**. Everything else is optional (Tautulli, Radarr, Sonarr, Seerr). Each one has a **Test connection** button. **Leaving Soon** is also optional and off until you enable it.
 3. Click **Save & refresh data**. The first refresh reads your whole library and can take a few minutes.
 4. Browse **Prune**. Nothing is deleted while the **DRY RUN** badge is showing.
@@ -132,6 +132,7 @@ Keys entered on the Settings page are saved in `settings.json` in your data fold
 
 ## Safety
 
+- **Change the default password.** Phlexerr starts with the password `obiwan` so the first install is quick, and it shows a warning banner until you set your own. Never expose it to the internet with the default.
 - **Dry-run is on by default.** It can only be switched off with `DRY_RUN=false` on the container, never from the web page, so a stolen login can't turn on deleting.
 - **Nothing is ever deleted automatically.** There are no schedules. Even the optional Leaving Soon row only *labels* titles; when a date passes, the title stays until you delete it.
 - Real deletes need you to type `DELETE` in a dialog that lists every item and the space it will free.
@@ -161,7 +162,7 @@ Everything below can be set as an environment variable. Service URLs and keys ca
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `APP_PASSWORD` | none, **required** | Password for the web page |
+| `APP_PASSWORD` | `obiwan` | Password for the web page. **Change it.** The app shows a warning banner while the default is in use |
 | `DRY_RUN` | `true` | Nothing is deleted while true |
 | `PLEX_URL`, `PLEX_TOKEN` | | Plex (required, but can be set in Settings) |
 | `TAUTULLI_URL`, `TAUTULLI_API_KEY` | | Optional |

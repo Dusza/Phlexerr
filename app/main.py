@@ -163,7 +163,7 @@ def index():
 @app.get("/api/config")
 def api_config():
     lv = _lv_conf()
-    return jsonify(dry_run=cfg.dry_run, services=cfg.services(), auth=not cfg.auth_disabled, leaving=lv["enabled"], leaving_days=lv["days"],
+    return jsonify(dry_run=cfg.dry_run, default_password=cfg.default_password, services=cfg.services(), auth=not cfg.auth_disabled, leaving=lv["enabled"], leaving_days=lv["days"],
                    max_batch=cfg.max_batch, history_days=cfg.history_days,
                    plex_link_base=cfg.plex_link_base or "https://app.plex.tv/desktop", refresh_hours=cfg.refresh_hours)
 
