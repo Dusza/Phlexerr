@@ -53,6 +53,13 @@ Cleaning up is half the story. Phlexerr also lets you **design the rows on your 
 - **Everyone sees it.** Rows are pinned to Home and can also show on other users' Home screens. They re-sync after every refresh, in the order you choose.
 - **Safe by design.** This only creates and edits Plex collections. It never deletes media.
 
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/missing.png" alt="Titles on a list that are not in Plex yet, with Seerr status and a Request button"><br><b>Request what is missing.</b> See which titles from a list aren't in Plex, check each against Seerr, and request them in one go.</td>
+    <td width="50%"><img src="docs/images/arrange.png" alt="Arrange titles screen with drag handles and position numbers"><br><b>Your own order.</b> Drag titles into any sequence, such as a story timeline, and it is written into the Plex collection.</td>
+  </tr>
+</table>
+
 ## Why Phlexerr
 
 **You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
@@ -83,6 +90,10 @@ Cleaning up is half the story. Phlexerr also lets you **design the rows on your 
   <tr>
     <td width="50%"><img src="docs/images/activity.png" alt="Activity tab with live now-playing cards"><br><b>Activity</b><br>Live "now playing" cards, a full watch history, and a Stop button (with an optional message to the viewer). Needs Tautulli.</td>
     <td width="50%"><img src="docs/images/protect.png" alt="Protect tab with protection rules"><br><b>Protect</b><br>Lock favorites by actor, director, studio, collection or keyword so they can never be selected.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/leaving-soon.png" alt="Prune list with Leaving Soon badges showing a date"><br><b>Leaving Soon (optional)</b><br>Mark titles with a date and, if you turn it on, they appear as a row on your Plex Home. Nothing is deleted when the date passes. You decide.</td>
+    <td width="50%"><img src="docs/images/phone.png" alt="Phlexerr on a phone" width="240"><br><b>On your phone</b><br>The whole app works on a phone, so you can prune from the couch.</td>
   </tr>
 </table>
 
