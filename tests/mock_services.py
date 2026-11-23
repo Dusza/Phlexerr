@@ -223,7 +223,7 @@ def tautulli():
              "stream_video_codec": "h264", "stream_video_full_resolution": "1080p", "stream_audio_decision": "direct play",
              "stream_audio_codec": "eac3", "stream_audio_channel_layout": "5.1(side)", "audio_language": "English",
              "stream_subtitle_decision": "burn", "subtitle_language": "English", "subtitle_codec": "srt",
-             "grandparent_thumb": "/library/metadata/202/thumb/1", "user_thumb": "", "secure": "1"},
+             "grandparent_thumb": "/library/metadata/202/thumb/1", "user_thumb": "", "secure": "1", "media_index": "3", "parent_media_index": "1"},
             {"session_key": "12", "friendly_name": "alice", "title": "Popular Recent Movie", "full_title": "Popular Recent Movie", "grandparent_title": "",
              "media_type": "movie", "year": "2023", "state": "paused", "progress_percent": "77", "player": "Chrome",
              "platform": "Chrome", "product": "Plex Web", "transcode_decision": "direct play", "quality_profile": "1080p", "bandwidth": "4000",

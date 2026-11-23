@@ -897,7 +897,7 @@ function nowCard(x) {
       <div class="nowdet">${det}<div class="nowends">${ends}<span class="nowclk">${fmtClock(x.elapsed)} / ${fmtClock(x.length)}</span></div></div>
       <div class="nowbar"><span style="width:${Math.min(100, x.progress)}%"></span></div></div>
     <div class="nowfoot"><div class="nowl"><div class="nowtitle"><span class="st">${x.state === "paused" ? "❚❚" : x.state === "buffering" ? "…" : "▶"}</span> ${esc(x.title)}</div>
-      <div class="muted">${esc(x.subtitle ? x.subtitle.replace(x.title + " - ", "") : x.year || "")}</div></div>
+      <div class="muted">${x.se ? `<b>${esc(x.se)}</b> · ` : ""}${esc(x.subtitle ? x.subtitle.replace(x.title + " - ", "") : x.year || "")}</div></div>
       <div class="nowuser">${x.key ? `<button class="btn small stopbtn" data-key="${esc(x.key)}" data-who="${esc(x.user)}" data-what="${esc(x.title)}" title="Stop this stream">Stop</button>` : ""}<span>${esc(x.user)}</span><span class="av">${ini}${x.avatar ? `<img src="${esc(thumbUrl(x.avatar, true))}" alt="">` : ""}</span></div></div></div>`;
 }
 // Live updates: poll Tautulli every 5 s, and tick playing streams forward every second in between (no flicker, no reload).

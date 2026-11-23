@@ -324,6 +324,8 @@ def api_activity():
             user=x.get("friendly_name") or x.get("user") or "?",
             title=x.get("grandparent_title") or x.get("title") or x.get("full_title") or "",
             subtitle=(x.get("full_title") if x.get("grandparent_title") else "") or "",
+            se=(f"S{x.get('parent_media_index')} · E{x.get('media_index')}"
+                if x.get("media_type") == "episode" and x.get("parent_media_index") not in (None, "") and x.get("media_index") not in (None, "") else ""),
             year=x.get("year"), type=x.get("media_type") or "", state=x.get("state") or "",
             progress=int(_num(x.get("progress_percent"))), elapsed=int(off / 1000), length=int(dur / 1000),
             ends_ts=int(time.time() + remain) if str(x.get("state")) == "playing" and dur else 0,
