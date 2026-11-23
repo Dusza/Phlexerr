@@ -674,6 +674,88 @@ def api_rules_save():
     return jsonify(_rules_payload())
 
 
+# ---------- Export / import of Protect rules (and Keep marks that survive a move to another server) ----------
+KEEP_ID_RE = re.compile(r"(imdb|tmdb|tvdb):[A-Za-z0-9]{1,20}")
+IMPORT_MAX_BYTES = 2 * 1024 * 1024
+
+
+@app.get("/api/rules/export")
+def api_rules_export():
+    rep = DATA["report"]
+    names = {i["keep_id"]: i for i in (rep["items"] if rep else [])}
+    keep = []
+    for kid in sorted(store.load_keep(cfg)):
+        if KEEP_ID_RE.fullmatch(kid):          # plex:<key> ids only mean something on this server, so they are not exported
+            it = names.get(kid) or {}
+            keep.append({"id": kid, **({"title": it["title"]} if it.get("title") else {}), **({"year": it["year"]} if it.get("year") else {})})
+    out = {"phlexerr": "protect", "version": 1,
+           "exported": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+           "rules": [{"type": r["type"], "pattern": r["pattern"], "top": r.get("top"), "note": r.get("note", ""), "enabled": bool(r.get("enabled", True))} for r in load_rules()],
+           "keep": keep}
+    resp = app.response_class(json.dumps(out, indent=2, ensure_ascii=False), mimetype="application/json")
+    resp.headers["Content-Disposition"] = 'attachment; filename="phlexerr-protect.json"'
+    return _nocache(resp)
+
+
+def _parse_import(body):
+    """Validate an exported file. Returns (rules, keep_ids, invalid_count, error)."""
+    data = body.get("data")
+    if not isinstance(data, dict) or data.get("phlexerr") != "protect" or not isinstance(data.get("rules", []), list):
+        return None, None, 0, "that file isn't a Phlexerr protect export"
+    good, bad, seen = [], 0, set()
+    for r in data.get("rules", [])[: rules.MAX_RULES * 2]:
+        f, err = rules.validate(r if isinstance(r, dict) else {})
+        if err:
+            bad += 1
+            continue
+        key = (f["type"], rules.norm(f["pattern"]), f["top"])
+        if key in seen:
+            continue
+        seen.add(key)
+        good.append((f, bool(r.get("enabled", True)), key))
+    kids = {str(k.get("id")) for k in (data.get("keep") or []) if isinstance(k, dict) and KEEP_ID_RE.fullmatch(str(k.get("id")))}
+    return good, kids, bad, None
+
+
+@app.post("/api/rules/import")
+def api_rules_import():
+    """body: {data: <exported file>, mode: "merge" | "replace", dry?: true}. Rules are re-validated one by one."""
+    if (request.content_length or 0) > IMPORT_MAX_BYTES:
+        return jsonify(error="that file is too large"), 413
+    body = request.get_json(silent=True) or {}
+    mode = body.get("mode", "merge")
+    if mode not in ("merge", "replace"):
+        return jsonify(error="bad mode"), 400
+    good, kids, bad, err = _parse_import(body)
+    if err:
+        return jsonify(error=err), 400
+    if mode == "replace" and not good:
+        return jsonify(error="that file has no valid rules, so nothing was replaced"), 400
+    with DATA_LOCK:
+        cur = [] if mode == "replace" else load_rules()
+        have = {(r["type"], rules.norm(r["pattern"]), r.get("top")) for r in cur}
+        added = dup = 0
+        for f, enabled, key in good:
+            if key in have:
+                dup += 1
+                continue
+            if len(cur) >= rules.MAX_RULES:
+                return jsonify(error=f"too many rules (limit {rules.MAX_RULES})"), 400
+            nr = rules.new_rule(f)
+            nr["enabled"] = enabled
+            cur.append(nr)
+            have.add(key)
+            added += 1
+        keep_now = set() if mode == "replace" else store.load_keep(cfg)
+        keep_new = len(kids - keep_now)
+        if not body.get("dry"):
+            if not store.write_json(cfg, "protection.json", {"rules": cur}):
+                return jsonify(error="could not save rules (is /config writable?)"), 500
+            store.save_keep(cfg, keep_now | kids)
+    print(f"[protect] import ({mode}{', preview' if body.get('dry') else ''}): {added} rules, {keep_new} keep marks, {dup} duplicates, {bad} invalid", flush=True)
+    return jsonify(ok=True, added=added, duplicates=dup, invalid=bad, keep_added=keep_new, dry=bool(body.get("dry")))
+
+
 @app.post("/api/rules/preview")
 def api_rules_preview():
     """Which titles a rule would protect, before it is saved."""

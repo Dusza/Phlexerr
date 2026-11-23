@@ -1431,6 +1431,37 @@ function cancelEdit() {
   renderRules();
 }
 $("#rCancel").addEventListener("click", cancelEdit);
+// ---------- Protect: export / import ----------
+const IMP = { data: null };
+function impHide() { IMP.data = null; $("#rImp").hidden = true; $("#rImp").innerHTML = ""; $("#rFile").value = ""; }
+$("#rImport").addEventListener("click", () => $("#rFile").click());
+$("#rFile").addEventListener("change", async () => {
+  const f = $("#rFile").files[0]; if (!f) return;
+  const box = $("#rImp");
+  try {
+    if (f.size > 2 * 1024 * 1024) throw new Error("that file is too large");
+    IMP.data = JSON.parse(await f.text());
+    const j = await post("/api/rules/import", { data: IMP.data, mode: "merge", dry: true });
+    box.hidden = false; box.className = "notice info";
+    box.innerHTML = `<b>${esc(f.name)}</b>: adding would bring in <b>${j.added}</b> new rule${j.added === 1 ? "" : "s"} and <b>${j.keep_added}</b> Keep mark${j.keep_added === 1 ? "" : "s"}` +
+      `${j.duplicates ? `, skipping ${j.duplicates} you already have` : ""}${j.invalid ? `, ignoring ${j.invalid} invalid` : ""}.
+      <div class="rtools"><button class="btn small primary" type="button" id="impMerge">Add to my rules</button>
+      <button class="btn small" type="button" id="impReplace">Replace all my rules</button>
+      <button class="btn small" type="button" id="impCancel">Cancel</button></div>`;
+    const run = async (mode) => {
+      if (mode === "replace" && !window.confirm("Replace ALL your current protection rules and Keep marks with the ones in this file?")) return;
+      try {
+        const r = await post("/api/rules/import", { data: IMP.data, mode });
+        toast(`Imported: ${r.added} rule${r.added === 1 ? "" : "s"}, ${r.keep_added} Keep mark${r.keep_added === 1 ? "" : "s"}`);
+        impHide(); await loadRules(); loadItems();
+      } catch (e) { box.className = "notice warn"; box.textContent = "Import failed: " + e.message; }
+    };
+    $("#impMerge").onclick = () => run("merge");
+    $("#impReplace").onclick = () => run("replace");
+    $("#impCancel").onclick = impHide;
+  } catch (e) { impHide(); box.hidden = false; box.className = "notice warn"; box.textContent = "Couldn't read that file: " + e.message; }
+});
+
 function checkDuplicate() {
   const f = ruleFields();
   if (!f.pattern.trim()) return null;
