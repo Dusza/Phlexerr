@@ -30,6 +30,8 @@ Born from a simple problem: **your users request everything.** Every "just one m
 
 Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built for people who would rather look first and click the button themselves, with a safety net around every click.
 
+It also brings the tools you already run onto **a single dashboard**: Plex for your library, Tautulli for watch history and who is streaming right now, Radarr and Sonarr for the files behind each title, and Seerr for who requested what. See it all in one place, act on it, and rarely have to leave.
+
 <p align="center">
   <img src="docs/images/prune.png" alt="Prune: review candidates with ratings, sizes, last-watched dates and who requested them" width="100%">
   <br><sub>Prune: see exactly what is worth deleting and how much space you'd get back. (Screenshots use demo data.)</sub>
@@ -38,6 +40,8 @@ Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built
 ## Why Phlexerr
 
 **You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
+
+**One dashboard for your whole stack.** Plex, Tautulli, Radarr, Sonarr and Seerr come together in one app. Prune from the library view, watch live streams, search and request new titles, and build Plex Home rows without hopping between five tabs.
 
 **Review before you act.** A sortable list or card view with ratings, file sizes, last-watched dates and who requested each title, so you can make the call with the facts in front of you.
 
