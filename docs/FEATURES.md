@@ -69,6 +69,10 @@ Titles and posters open the item in Plex. Set **Plex links** in Settings (defaul
 ## Activity (who is watching what)
 The Activity tab reads Tautulli: a live "Now playing" panel (updates by itself every 5 s) and recent plays with user/type/title filters. Endpoints: `/api/activity`, `/api/plays`. Needs the Tautulli URL and API key. Each stream has a Stop button (with an optional message to the viewer) that calls Tautulli `terminate_session`; the rest is read-only.
 
+## Request tab (search and request any title)
+
+Needs Seerr; the tab is hidden without it. Type two or more letters to search Seerr's catalogue for movies and shows. Each result shows Seerr's own status: **Available**, **Partially available**, **Requested** (approved and processing), **Pending** (waiting for approval) or **Blocklisted**. Titles that are already available, requested or pending have no button, so a request can't be duplicated. **Request** sends it to Seerr as the API key's user, which passes it on to Radarr or Sonarr; shows are requested with all seasons. Nothing is requested until you press the button.
+
 ## History and space freed
 
 The **History** tab (its own screen, also reachable at `#history`) shows total space freed, items deleted, the last 30 days, a 12-month chart and the biggest deletions. Only real (non-dry-run) deletions that removed the files count. The table below lists every attempt with its steps, and exports to CSV.

@@ -1,49 +1,97 @@
-# Phlexerr
+<p align="center">
+  <img src="docs/images/banner.png" alt="Phlexerr: clean up your Plex library on your terms" width="100%">
+</p>
 
-*Pronounced "flex-er" (Plex + "ph" + "err").*
+<p align="center">
+  <b>Pronounced "flex-er"</b> (Plex + "ph" + "err")<br>
+  <i>Review what is worth deleting. You decide. Nothing is removed on a timer or behind your back.</i>
+</p>
 
-**Clean up your Plex library on your terms.** Phlexerr shows you what is worth deleting, you decide, and nothing is ever removed on a timer or behind your back.
+<p align="center">
+  <a href="https://github.com/Dusza/Phlexerr/actions"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/Dusza/Phlexerr/docker.yml?label=build&logo=github"></a>
+  <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-green"></a>
+  <img alt="docker" src="https://img.shields.io/badge/docker-ghcr.io%2Fdusza%2Fphlexerr-2496ED?logo=docker&logoColor=white">
+  <img alt="unraid" src="https://img.shields.io/badge/Unraid-ready-F15A2C">
+  <img alt="mode" src="https://img.shields.io/badge/deletes-manual%20only-e5a00d">
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> &bull;
+  <a href="#required-vs-optional">What you need</a> &bull;
+  <a href="#first-run-setup">First-run setup</a> &bull;
+  <a href="#safety">Safety</a> &bull;
+  <a href="docs/FEATURES.md">Feature guide</a> &bull;
+  <a href="#how-it-compares">Compare</a>
+</p>
+
+---
 
 Born from a simple problem: **your users request everything.** Every "just one more season" and "I'll definitely watch that someday" lands on your server, and the drives fill up. Phlexerr is how you take the library back, kindly and on your own schedule.
 
 Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built for people who would rather look first and click the button themselves, with a safety net around every click.
 
+<p align="center">
+  <img src="docs/images/prune.png" alt="Prune: review candidates with ratings, sizes, last-watched dates and who requested them" width="100%">
+  <br><sub>Prune: see exactly what is worth deleting and how much space you'd get back. (Screenshots use demo data.)</sub>
+</p>
+
 ## Why Phlexerr
 
-- **You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
-- **Tame the request button.** See who requested each title and whether anyone ever pressed play, so "requested it, never watched it" stops being a mystery. Prune it, and if they really do want it back later, they can request it again.
-- **See the space you win back.** Every selection shows how much it will free before you confirm, and the History tab keeps a running total of what you've reclaimed, so you can see the drive-space payoff.
-- **Review before you act.** A sortable list or card view with ratings, file sizes, last-watched dates and who requested each title, so you can make the call with the facts in front of you.
-- **Dry-run by default.** You get an exact report of what *would* happen until you choose to turn deleting on, and that switch can't be flipped from the web page.
-- **Protection that actually protects.** Lock titles by actor (even top-billed only), director, studio, collection or keyword. Protected titles can't be selected, and the server refuses them even from an old page.
-- **Warn people first, only if you want to.** An optional, off-by-default **Leaving Soon** row puts titles you picked on your Plex Home with a date. When the date passes, nothing happens until you delete them.
-- **Everything in one place.** Prune, Protect, custom Plex Home rows, live "who's watching" and a history of space freed, in one app.
-- **Starts with only Plex.** Tautulli, Radarr, Sonarr and Seerr are optional extras, and the app works around any you don't have.
+&#9995; **You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
+
+&#128269; **Review before you act.** A sortable list or card view with ratings, file sizes, last-watched dates and who requested each title, so you can make the call with the facts in front of you.
+
+&#127916; **Tame the request button.** See who requested each title and whether anyone ever pressed play. Prune it, and if they really do want it back later, they can request it again. You can even search and request new titles from inside Phlexerr.
+
+&#128190; **See the space you win back.** Every selection shows how much it will free before you confirm, and the History tab keeps a running total of what you've reclaimed.
+
+&#128737;&#65039; **Dry-run by default.** You get an exact report of what *would* happen until you choose to turn deleting on, and that switch can't be flipped from the web page.
+
+&#128274; **Protection that actually protects.** Lock titles by actor (even top-billed only), director, studio, collection or keyword. Protected titles can't be selected, and the server refuses them even from an old page.
+
+&#9203; **Warn people first, only if you want to.** An optional, off-by-default **Leaving Soon** row puts titles you picked on your Plex Home with a date. When the date passes, nothing happens until you delete them.
+
+&#129529; **Starts with only Plex.** Tautulli, Radarr, Sonarr and Seerr are optional extras, and the app works around any you don't have.
+
+## A tour
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/request.png" alt="Request tab with Seerr-style status badges"><br><b>Request</b><br>Search any movie or show and request it through Seerr. Status badges (Available, Pending, Requested, Partially available) match what Seerr shows.</td>
+    <td width="50%"><img src="docs/images/history.png" alt="History tab with space freed"><br><b>History</b><br>Everything you've deleted, the space freed, and a one-click Re-request if you change your mind.</td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/activity.png" alt="Activity tab with live now-playing cards"><br><b>Activity</b><br>Live "now playing" cards, a full watch history, and a Stop button (with an optional message to the viewer). Needs Tautulli.</td>
+    <td width="50%"><img src="docs/images/protect.png" alt="Protect tab with protection rules"><br><b>Protect</b><br>Lock favorites by actor, director, studio, collection or keyword so they can never be selected.</td>
+  </tr>
+</table>
 
 ### How it compares
 
 These tools overlap a little but solve different problems. Pick by what you want done.
 
-| | **Phlexerr** | Maintainerr | Janitorr | Cleanuparr | Checkrr |
-|---|---|---|---|---|---|
-| Main job | Review and delete unwatched or unwanted media by hand | Rule-based media cleanup | Automatic media cleanup | Clean stalled, failed or unwanted downloads from the download client queue | Find corrupt or broken media files |
-| Who decides what is deleted | **You, with a review screen** | Rules, on a schedule | Rules, on a schedule | Rules (queue items, not your library) | Reports problems |
-| Manual, title-by-title control | **Yes, it is the whole design** | Limited | Limited | No | No |
-| Dry-run before anything happens | **Yes, on by default** | Varies by setup | Yes (setting) | Yes (setting) | Report-only |
-| Warn viewers before removal | Optional Leaving Soon row, **you** delete later | Yes, automated | Yes, automated | No | No |
-| Custom Plex Home rows | **Yes** | Collections | No | No | No |
-| Live "who is watching" and Stop stream | **Yes** (with Tautulli) | No | No | No | No |
-| Space-freed history | **Yes** | No | No | No | No |
-| Needs Radarr / Sonarr | **No, optional** | Optional | Yes | Yes | Optional |
-| Plex required | Yes | Yes (or Jellyfin) | Plex or Jellyfin | No | No |
+| | **Phlexerr** | [Prunerr](https://github.com/helliott20/prunerr) | Maintainerr | Janitorr | Cleanuparr | Checkrr |
+|---|---|---|---|---|---|---|
+| Main job | Review and delete by hand | Rules feed a review queue with grace periods | Rule-based media cleanup | Automatic media cleanup | Clean stalled or failed downloads | Find corrupt media files |
+| Who decides what is deleted | **You, with a review screen** | Rules, then you approve | Rules, on a schedule | Rules, on a schedule | Rules (download queue, not your library) | Reports problems |
+| Manual, title-by-title control | **Yes, it is the whole design** | Approval queue | Limited | Limited | No | No |
+| Dry-run before anything happens | **Yes, on by default** | Not described | Varies by setup | Yes (setting) | Yes (setting) | Report-only |
+| Warn viewers before removal | Optional Leaving Soon row | Upcoming-deletions view | Yes, automated | Yes, automated | No | No |
+| Search and request titles (Seerr) | **Yes, with status badges** | Resets Seerr requests on delete | No | No | No | No |
+| Custom Plex Home rows | **Yes** | No | Collections | No | No | No |
+| Live "who is watching" and Stop stream | **Yes** (with Tautulli) | No | No | No | No | No |
+| Space-freed history | **Yes** | Storage trends | No | No | No | No |
+| Jellyfin / Emby | No (Plex only) | Yes | Yes (Jellyfin) | Yes | n/a | n/a |
+| Needs Radarr / Sonarr | **No, optional** | Recommended | Optional | Yes | Yes | Optional |
 
-*Based on each project's public description at the time of writing; those projects change, so check their pages before deciding.* They are good at what they do, and they can run alongside Phlexerr. If you want the library cleaned without touching it, use an automatic tool. If you want to see it, decide, and press the button yourself, use Phlexerr.
+*Based on each project's public description at the time of writing; those projects change, so check their pages before deciding.* They are good at what they do, and they can run alongside Phlexerr. If you want rules and automation, or you don't use Plex, look at them. If you want to see your library, decide, and press the button yourself, use Phlexerr.
 
 ## What it does
 
 - **Prune:** find movies and shows worth deleting (never watched, stale, low rated, large, unrequested downloads) and delete them, optionally cleaning up Radarr, Sonarr and Seerr at the same time.
 - **Protect:** lock titles so they can never be deleted.
 - **Plex Home Screen:** build your own Home rows from criteria or IMDb/MDBList lists, and request what's missing through Seerr.
+- **Request:** search for any movie or show and request it through Seerr, with live status badges (needs Seerr).
 - **Activity:** live "now playing" cards, a full watch history, and a Stop button for a stream (needs Tautulli).
 - **History:** everything deleted, and the space freed.
 - **Leaving Soon (optional):** warn viewers before you delete, without automating anything.

@@ -818,7 +818,9 @@ function fmtBig(b) {
   return gb >= 1024 ? (gb / 1024).toFixed(2) + " TB" : gb >= 100 ? gb.toFixed(0) + " GB" : gb.toFixed(1) + " GB";
 }
 function showView(name) {
-  const hist = name === "history", prot = name === "protect", rws = name === "rows", hlp = name === "help", act = name === "activity";
+  const hist = name === "history", prot = name === "protect", rws = name === "rows", hlp = name === "help", act = name === "activity", req = name === "request";
+  $("#viewReq").hidden = !req;
+  $("#tabReq").classList.toggle("active", req);
   $("#viewAct").hidden = !act;
   $("#tabAct").classList.toggle("active", act);
   actStop();
@@ -826,18 +828,56 @@ function showView(name) {
   $("#tabRows").classList.toggle("active", rws);
   $("#viewHelp").hidden = !hlp;
   $("#tabHelp").classList.toggle("active", hlp);
-  $("#viewMain").hidden = hist || prot || rws || hlp || act;
+  $("#viewMain").hidden = hist || prot || rws || hlp || act || req;
   $("#viewHist").hidden = !hist;
   $("#viewProt").hidden = !prot;
-  $("#tabMain").classList.toggle("active", !hist && !prot && !rws && !hlp && !act);
+  $("#tabMain").classList.toggle("active", !hist && !prot && !rws && !hlp && !act && !req);
   $("#tabHist").classList.toggle("active", hist);
   $("#tabProt").classList.toggle("active", prot);
-  document.body.classList.toggle("view-hist", hist || prot || rws || hlp || act);
+  document.body.classList.toggle("view-hist", hist || prot || rws || hlp || act || req);
+  if (req) setTimeout(() => $("#reqQ").focus(), 0);
   if (act) actStart();
   if (hist) loadHistory(true);
   if (prot) loadRules();
   if (rws) loadRows();
 }
+// ---------- Request tab (search Seerr, request any title) ----------
+const REQ = { t: null, n: 0 };
+const REQ_LABEL = { available: "Available", partial: "Partially available", processing: "Requested", pending: "Pending", blocklisted: "Blocklisted" };
+function reqCard(it) {
+  const done = ["available", "processing", "pending", "blocklisted"].includes(it.status);
+  const label = REQ_LABEL[it.status];
+  return `<div class="reqcard" data-t="${esc(it.type)}" data-id="${it.tmdb_id}">
+    ${it.poster ? `<img class="mthumb" src="/api/tmdbimg/${esc(it.poster)}" alt="" loading="lazy" width="60" height="90">` : `<span class="mthumb"></span>`}
+    <div class="reqinfo"><div class="mtitle2"><b>${esc(it.title)}</b> ${it.year ? `<span class="dim">(${esc(it.year)})</span>` : ""} <span class="badge">${it.type === "movie" ? "Movie" : "Show"}</span>${it.rating ? ` <span class="dim">★ ${it.rating}</span>` : ""}</div>
+      <div class="sub">${esc(it.overview)}</div></div>
+    <div class="reqact">${label ? `<span class="badge" data-state="${esc(it.status)}">${esc(label)}</span>` : ""}
+      ${done ? "" : `<button class="btn small primary reqbtn" type="button">${it.status === "partial" ? "Request more" : "Request"}</button>`}</div></div>`;
+}
+function reqNote(msg) { const n = $("#reqNote"); n.hidden = !msg; n.textContent = msg || ""; }
+async function reqSearch() {
+  const q = $("#reqQ").value.trim(), n = ++REQ.n, box = $("#reqRes");
+  reqNote("");
+  if (q.length < 2) { box.innerHTML = ""; return; }
+  try {
+    const j = await api("/api/seerr/search?q=" + encodeURIComponent(q));
+    if (n !== REQ.n) return;
+    box.innerHTML = j.results.length ? j.results.map(reqCard).join("") : `<p class="muted">Nothing found for “${esc(q)}”.</p>`;
+  } catch (e) { if (n === REQ.n) { box.innerHTML = ""; reqNote("Search failed: " + e.message); } }
+}
+$("#reqQ").addEventListener("input", () => { clearTimeout(REQ.t); REQ.t = setTimeout(reqSearch, 350); });
+$("#reqRes").addEventListener("click", async (ev) => {
+  const b = ev.target.closest(".reqbtn"); if (!b) return;
+  const card = b.closest(".reqcard"), title = card.querySelector("b").textContent;
+  b.disabled = true; b.textContent = "Requesting…";
+  try {
+    await post("/api/seerr/request", { type: card.dataset.t, tmdb_id: Number(card.dataset.id) });
+    b.replaceWith(Object.assign(document.createElement("span"), { className: "badge", textContent: "Requested" }));
+    card.querySelector(".reqact .badge")?.setAttribute("data-state", "processing");
+    toast(`Requested “${title}”`);
+  } catch (e) { b.disabled = false; b.textContent = "Request"; reqNote(`Couldn't request “${title}”: ${e.message}`); }
+});
+
 // ---------- Activity (Tautulli: now playing + recent plays) ----------
 const A = { sess: [], at: 0, sig: null, tick: null, timer: null, start: 0, rows: 0, busy: false, gen: 0 };
 const fmtDur = (sec) => (!sec ? "" : sec >= 3600 ? Math.floor(sec / 3600) + "h " + Math.round((sec % 3600) / 60) + "m" : Math.max(1, Math.round(sec / 60)) + "m");
@@ -964,8 +1004,8 @@ $("#aQ").addEventListener("input", () => { clearTimeout(actDeb); actDeb = setTim
 $("#aLen").addEventListener("change", actReload);
 $("#aQx").addEventListener("click", () => { $("#aQ").value = ""; actReload(); });
 $("#aMore").addEventListener("click", () => actPlays(false));
-const HASHES = { activity: "#activity", history: "#history", protect: "#protect", rows: "#rows", help: "#help" };
-const viewFromHash = () => (location.hash === "#activity" ? "activity" : location.hash === "#history" ? "history" : location.hash === "#protect" ? "protect" : location.hash === "#rows" ? "rows" : location.hash === "#help" ? "help" : "main");
+const HASHES = { request: "#request", activity: "#activity", history: "#history", protect: "#protect", rows: "#rows", help: "#help" };
+const viewFromHash = () => (location.hash === "#request" ? "request" : location.hash === "#activity" ? "activity" : location.hash === "#history" ? "history" : location.hash === "#protect" ? "protect" : location.hash === "#rows" ? "rows" : location.hash === "#help" ? "help" : "main");
 document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
   const v = t.dataset.view;
   history.replaceState(null, "", HASHES[v] || location.pathname);
