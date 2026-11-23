@@ -15,7 +15,7 @@
   <Icon>https://raw.githubusercontent.com/Dusza/Phlexerr/main/app/static/icons/icon-512.png</Icon>
   <ExtraParams>--restart=unless-stopped</ExtraParams>
 
-  <Config Name="Web UI Port" Target="8080" Default="8080" Mode="tcp" Description="Port for the web interface" Type="Port" Display="always" Required="true" Mask="false">8080</Config>
+  <Config Name="Web UI Port" Target="8080" Default="8432" Mode="tcp" Description="Port for the web interface" Type="Port" Display="always" Required="true" Mask="false">8432</Config>
   <Config Name="Config / data" Target="/config" Default="/mnt/user/appdata/phlexerr/data" Mode="rw" Description="Stores the report cache, keep-list and deletion log" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/phlexerr/data</Config>
 
   <Config Name="App password" Target="APP_PASSWORD" Default="obiwan" Mode="" Description="Password for signing in. Default is obiwan so you can get started quickly: CHANGE IT before exposing this to anyone else." Type="Variable" Display="always" Required="true" Mask="false">obiwan</Config>
