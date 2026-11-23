@@ -20,7 +20,7 @@
 <header class="top">
   <h1><img class="logo" src="/static/icons/logo.svg" alt="" width="28" height="28">Phlexerr</h1>
   <span id="modeChip" class="chip"></span>
-  <nav class="tabs"><button class="tab active" id="tabMain" data-view="main">Prune</button><button class="tab" id="tabProt" data-view="protect">Protect</button><button class="tab" id="tabRows" data-view="rows">Plex Home Screen</button><button class="tab" id="tabHist" data-view="history">History</button><button class="tab" id="tabAct" data-view="activity">Activity<span class="tabbadge" id="actBadge" hidden aria-live="polite"></span></button><button class="tab" id="tabHelp" data-view="help">Help</button></nav>
+  <nav class="tabs"><button class="tab active" id="tabMain" data-view="main">Prune</button><button class="tab" id="tabProt" data-view="protect">Protect</button><button class="tab" id="tabRows" data-view="rows">Plex Home Screen</button><button class="tab needs-seerr" id="tabReq" data-view="request">Request</button><button class="tab" id="tabHist" data-view="history">History</button><button class="tab" id="tabAct" data-view="activity">Activity<span class="tabbadge" id="actBadge" hidden aria-live="polite"></span></button><button class="tab" id="tabHelp" data-view="help">Help</button></nav>
   <span class="grow"></span>
   <span id="genInfo" class="muted"></span>
   <button class="btn small" id="btnTheme" title="Switch between light and dark" aria-label="Toggle light/dark mode">◐</button>
@@ -238,6 +238,7 @@
       <a href="#help-plex">Plex Home Screen</a>
       <a href="#help-lists">Lists</a>
       <a href="#help-missing">Missing</a>
+      <a href="#help-request">Request</a>
       <a href="#help-history">History</a>
       <a href="#help-activity">Activity</a>
       <a href="#help-settings">Settings</a>
@@ -321,6 +322,15 @@
       </ul>
     </details>
 
+    <details class="hs needs-seerr" id="help-request"><summary>Request: search and request any title</summary>
+      <ul>
+        <li>Type at least two letters on the <b>Request</b> tab to search Seerr for movies and shows. The tab is hidden until Seerr is connected in Settings.</li>
+        <li>Each result shows the same status Seerr does: <i>Available</i>, <i>Partially available</i>, <i>Requested</i> (approved and on its way), <i>Pending</i> (waiting for approval) or <i>Blocklisted</i>. Titles that are already available, requested or pending have no Request button, so you can't duplicate a request.</li>
+        <li><b>Request</b> sends it to Seerr as the API key's user, and Seerr passes it to Radarr or Sonarr as usual. Shows are requested with all seasons. Seerr may still need to approve it.</li>
+        <li>Nothing is requested until you press the button.</li>
+      </ul>
+    </details>
+
     <details class="hs" id="help-history"><summary>History, restore and re-request</summary>
       <ul>
         <li>History lists every deletion with size, requester, mode (dry/live) and result. Choose 25 / 50 / 100 / 250 / All per page (remembered).</li>
@@ -393,6 +403,15 @@
     <div id="aEmpty" class="empty" hidden>No plays match.</div>
   </div>
   <div class="pager"><button class="btn small" id="aMore" hidden>Load more</button></div>
+</main>
+<main id="viewReq" hidden>
+  <section class="panel">
+    <h2>Request a movie or show</h2>
+    <p class="muted">Search for any title and request it through Seerr, without leaving Phlexerr. Seerr passes it on to Radarr or Sonarr as usual. Shows are requested with all seasons.</p>
+    <p><input type="search" id="reqQ" placeholder="Search movies and shows…" aria-label="Search Seerr for a title" autocomplete="off" maxlength="100"></p>
+    <div id="reqNote" class="notice" hidden role="status"></div>
+    <div id="reqRes" class="reqgrid" aria-live="polite"></div>
+  </section>
 </main>
 <main id="viewHist" hidden>
   <div id="hNotice" class="notice" hidden role="status"></div>

@@ -886,6 +886,58 @@ def api_rerequest():
     return jsonify(ok=True, status=res.get("status"), as_user=who, title=title)
 
 
+# ---------- Request tab: search Seerr and request any title without leaving Phlexerr ----------
+def _seerr_card(r):
+    kind = r.get("mediaType")
+    if kind not in ("movie", "tv") or not r.get("id"):
+        return None
+    d = r.get("releaseDate") if kind == "movie" else r.get("firstAirDate")
+    mi = r.get("mediaInfo") or {}
+    st = {5: "available", 4: "partial", 3: "processing", 2: "pending", 6: "blocklisted"}.get(mi.get("status"), "")
+    poster = (r.get("posterPath") or "").lstrip("/")
+    return {"tmdb_id": int(r["id"]), "type": kind, "title": r.get("title") or r.get("name") or "",
+            "year": (d or "")[:4], "overview": (r.get("overview") or "")[:300],
+            "rating": round(float(r.get("voteAverage") or 0), 1),
+            "poster": poster if re.fullmatch(r"[A-Za-z0-9_-]{5,60}\.(jpg|png)", poster) else "", "status": st}
+
+
+@app.get("/api/seerr/search")
+def api_seerr_search():
+    if not cfg.services()["seerr"]:
+        return jsonify(error="Seerr isn't configured (Settings)"), 400
+    q = (request.args.get("q") or "").strip()
+    if len(q) < 2 or len(q) > 100:
+        return jsonify(results=[])
+    try:
+        raw = clients.Seerr(cfg).search(q)
+    except ApiError as ex:
+        return jsonify(error=str(ex)), 502
+    out = [c for c in (_seerr_card(r) for r in raw) if c][:24]
+    return _nocache(jsonify(results=out))
+
+
+@app.post("/api/seerr/request")
+def api_seerr_request():
+    """Request a title through Seerr (as the API key's user). Seerr then hands it to Radarr/Sonarr itself."""
+    if not cfg.services()["seerr"]:
+        return jsonify(error="Seerr isn't configured (Settings)"), 400
+    b = request.get_json(silent=True) or {}
+    kind = b.get("type")
+    try:
+        tmdb = int(b.get("tmdb_id"))
+    except (TypeError, ValueError):
+        return jsonify(error="bad title id"), 400
+    if kind not in ("movie", "tv") or tmdb <= 0:
+        return jsonify(error="bad title type"), 400
+    try:
+        res = clients.Seerr(cfg).request_title(kind, tmdb)
+    except ApiError as ex:
+        print(f"[request] {kind} tmdb:{tmdb} failed: {ex}", flush=True)
+        return jsonify(error=str(ex)), 502
+    print(f"[request] {kind} tmdb:{tmdb} requested from the Request tab", flush=True)
+    return jsonify(ok=True, status=res.get("status"))
+
+
 TB_ID = "__tb__"      # the built-in "Released on this day" row takes part in the Home ordering under this id
 
 

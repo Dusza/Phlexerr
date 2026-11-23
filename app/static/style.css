@@ -515,3 +515,12 @@ body:not(.has-leaving) .needs-leaving { display: none !important; }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 #pwWarn{margin:8px 16px 0}
+
+#reqQ{width:100%;max-width:520px}
+.reqgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px;margin-top:12px}
+.reqcard{display:flex;gap:12px;align-items:flex-start;padding:10px;border:1px solid var(--line,#3a3f44);border-radius:8px;background:var(--panel,transparent)}
+.reqcard .mthumb{width:60px;height:90px;flex:none;object-fit:cover;border-radius:4px;background:#2a2e32}
+.reqinfo{flex:1;min-width:0}.reqinfo .sub{max-height:4.2em;overflow:hidden}
+.reqact{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex:none}
+.reqact .badge[data-state=available]{background:#1f6f43;color:#fff}.reqact .badge[data-state=partial]{background:#2f7d5b;color:#fff}
+.reqact .badge[data-state=processing]{background:#6b4fbb;color:#fff}.reqact .badge[data-state=pending]{background:#b88a12;color:#fff}.reqact .badge[data-state=blocklisted]{background:#a33;color:#fff}

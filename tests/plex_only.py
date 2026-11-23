@@ -67,6 +67,7 @@ try:
         pg.goto(base + "/#activity"); pg.wait_for_timeout(800); pg.screenshot(path=os.path.join(SHOT, "po_act_direct.png"))
         pg.goto(base + "/"); pg.wait_for_selector("#tabMain"); pg.wait_for_timeout(1200)
         check(pg.locator(".badge.warn", has_text="no Radarr").count() == 0 and pg.locator(".badge.warn", has_text="no Sonarr").count() == 0, "no misleading 'no Radarr/Sonarr' badges when they aren't connected")
+        check(not pg.is_visible("#tabReq"), "Request tab is hidden without Seerr")
         check(not pg.is_visible("[data-preset=auto]") and not pg.is_visible("#fUser"), "Seerr-only controls (Unrequested downloads, Requested by) are hidden without Seerr")
         pg.click("#tabAct"); pg.wait_for_timeout(500)
         check(pg.is_visible("#aSetup") and not pg.is_visible("#aNow") and "Tautulli" in pg.inner_text("#aSetup") and not pg.is_visible("#actBadge"), "Activity shows a friendly 'needs Tautulli' panel")

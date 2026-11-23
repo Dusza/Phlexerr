@@ -1120,6 +1120,18 @@ try:
             pgl.click("#rows tr[data-id] .rowchk >> nth=0")
             check(pgl.is_visible("#btnUnleave"), "UI: 'Not leaving' is offered for a marked title")
             pgl.screenshot(path=os.path.join(shots, "leaving.png"))
+            # Request tab: search Seerr and request a title from inside Phlexerr
+            requests.post(MOCK + "/__reset")
+            pgl.click("#tabReq"); pgl.fill("#reqQ", "Dune"); pgl.wait_for_selector(".reqcard .reqbtn")
+            check("Dune" in pgl.inner_text(".reqcard") and pgl.is_visible(".reqcard .reqbtn"), "UI: Request tab shows search results with a Request button")
+            pgl.screenshot(path=os.path.join(shots, "request.png"))
+            pgl.click(".reqcard .reqbtn >> nth=0"); pgl.wait_for_selector(".reqcard .badge:text('Requested')")
+            rc = [c for c in requests.get(MOCK + "/__calls").json() if c.get("what") == "request"]
+            check(len(rc) == 1 and rc[0]["query"].get("mediaType") == "movie" and rc[0]["query"].get("mediaId") == 5, f"UI: Request button sends the request to Seerr ({rc})")
+            r = sl.post(bl + "/api/seerr/request", json={"type": "bogus", "tmdb_id": 5}); check(r.status_code == 400, "request API rejects a bad type")
+            r = sl.post(bl + "/api/seerr/request", json={"type": "movie", "tmdb_id": "x"}); check(r.status_code == 400, "request API rejects a bad id")
+            check(sl.get(bl + "/api/seerr/search?q=a").json() == {"results": []}, "search ignores one-letter queries")
+            pgl.click("#tabMain")
             pgl.click("#btnSettings") if pgl.locator("#btnSettings").count() else pgl.click("text=Settings")
             pgl.wait_for_selector("#s_lv_enabled")
             check(pgl.is_checked("#s_lv_enabled") and pgl.input_value("#s_lv_name") == "Leaving Soon", "UI: Settings has the Leaving Soon section")
