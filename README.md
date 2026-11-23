@@ -70,7 +70,7 @@ Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built
 
 These tools overlap a little but solve different problems. Pick by what you want done.
 
-| | **Phlexerr** | [Prunerr](https://github.com/helliott20/prunerr) | Maintainerr | Janitorr | Cleanuparr | Checkrr |
+| | **Phlexerr** | [Prunerr](https://github.com/helliott20/prunerr) | [Maintainerr](https://github.com/Maintainerr/Maintainerr) | [Janitorr](https://github.com/Schaka/janitorr) | [Cleanuparr](https://github.com/Cleanuparr/Cleanuparr) | [Checkrr](https://github.com/aetaric/checkrr) |
 |---|---|---|---|---|---|---|
 | Main job | Review and delete by hand | Rules feed a review queue with grace periods | Rule-based media cleanup | Automatic media cleanup | Clean stalled or failed downloads | Find corrupt media files |
 | Who decides what is deleted | **You, with a review screen** | Rules, then you approve | Rules, on a schedule | Rules, on a schedule | Rules (download queue, not your library) | Reports problems |
@@ -81,7 +81,7 @@ These tools overlap a little but solve different problems. Pick by what you want
 | Custom Plex Home rows | **Yes** | No | Collections | No | No | No |
 | Live "who is watching" and Stop stream | **Yes** (with Tautulli) | No | No | No | No | No |
 | Space-freed history | **Yes** | Storage trends | No | No | No | No |
-| Jellyfin / Emby | No (Plex only) | Yes | Yes (Jellyfin) | Yes | n/a | n/a |
+| Jellyfin / Emby | No (Plex only) | Yes | Yes | Yes (Jellyfin, Emby) | n/a | n/a |
 | Needs Radarr / Sonarr | **No, optional** | Recommended | Optional | Yes | Yes | Optional |
 
 *Based on each project's public description at the time of writing; those projects change, so check their pages before deciding.* They are good at what they do, and they can run alongside Phlexerr. If you want rules and automation, or you don't use Plex, look at them. If you want to see your library, decide, and press the button yourself, use Phlexerr.
