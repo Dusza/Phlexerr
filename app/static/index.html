@@ -203,6 +203,13 @@
       <button class="btn primary" type="submit">Add rule</button>
       <button class="btn" type="button" id="rCancel" hidden>Cancel</button>
     </form>
+    <div class="rtools">
+      <a class="btn small" id="rExport" href="/api/rules/export" download="phlexerr-protect.json">Export rules</a>
+      <button class="btn small" type="button" id="rImport">Import rules…</button>
+      <input type="file" id="rFile" accept="application/json,.json" hidden aria-label="Choose a Phlexerr protect export file">
+      <span class="muted">Back up your rules, or move them to another server.</span>
+    </div>
+    <div id="rImp" class="notice" role="status" hidden></div>
     <div class="muted" id="rHelp"></div>
     <div id="rPreview" class="rpreview"></div>
     <div id="rErr" class="errtxt"></div>
@@ -292,6 +299,7 @@
         <li><b>Preview</b> next to a rule lists exactly what it protects, with total disk size and per-title sizes. Disk size is also shown for every rule without clicking.</li>
         <li>The scorecard shows protected disk space, how much of that was never watched, and the rules vs Keep split. Click column headers to sort rules.</li>
         <li>Toggle a rule off to stop protecting without deleting it.</li>
+        <li><b>Export rules</b> downloads all your rules (and portable Keep marks) as a file. <b>Import rules…</b> reads one back: you see what it would add, then choose <i>Add to my rules</i> (skips ones you already have) or <i>Replace all my rules</i>. Use it for backups or to set up another server.</li>
       </ul>
     </details>
 

@@ -93,7 +93,7 @@ These tools overlap a little but solve different problems. Pick by what you want
 ## What it does
 
 - **Prune:** find movies and shows worth deleting (never watched, stale, low rated, large, unrequested downloads) and delete them, optionally cleaning up Radarr, Sonarr and Seerr at the same time.
-- **Protect:** lock titles so they can never be deleted.
+- **Protect:** lock titles so they can never be deleted. Export your rules to a file and import them on another server or after a reinstall.
 - **Plex Home Screen:** build your own Home rows from criteria or IMDb/MDBList lists, and request what's missing through Seerr.
 - **Request:** search for any movie or show and request it through Seerr, with live status badges (needs Seerr).
 - **Activity:** live "now playing" cards, a full watch history, and a Stop button for a stream (needs Tautulli).

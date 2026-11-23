@@ -624,6 +624,33 @@ try:
     for x in s.get(base + "/api/rules").json()["rules"]:
         if x["pattern"] == "zzzcachetest":
             s.post(base + "/api/rules", json={"delete": x["id"]})
+    # Protect export / import
+    cur0 = s.get(base + "/api/rules").json()["rules"]
+    ex = s.get(base + "/api/rules/export"); exj = ex.json()
+    check("attachment" in ex.headers.get("Content-Disposition", "") and exj["phlexerr"] == "protect" and len(exj["rules"]) == len([r for r in cur0]), "API: Protect export is a downloadable JSON file with every rule")
+    check(all(set(r) == {"type", "pattern", "top", "note", "enabled"} for r in exj["rules"]) and "id" not in exj["rules"][0], "API: export holds only portable rule fields")
+    imp_file = {"phlexerr": "protect", "version": 1, "rules": [
+        {"type": "actor", "pattern": "Import Actor", "top": 3, "note": "n", "enabled": False},
+        {"type": "studio", "pattern": "Import Studio"},
+        {"type": "title", "pattern": "*"}, {"type": "bogus", "pattern": "x"}, "junk"],
+        "keep": [{"id": "imdb:tt0000001"}, {"id": "plex:999"}, {"id": "imdb:tt0000001"}, {"id": "../etc"}]}
+    r = s.post(base + "/api/rules/import", json={"data": imp_file, "mode": "merge", "dry": True}).json()
+    check(r["added"] == 2 and r["invalid"] == 3 and r["keep_added"] == 1 and r["dry"], f"API: import preview counts rules, bad rules and portable Keep marks ({r})")
+    check(len(s.get(base + "/api/rules").json()["rules"]) == len(cur0), "API: import preview changes nothing")
+    r = s.post(base + "/api/rules/import", json={"data": imp_file, "mode": "merge"}).json()
+    after = s.get(base + "/api/rules").json()["rules"]
+    check(r["added"] == 2 and len(after) == len(cur0) + 2 and any(x["pattern"] == "Import Actor" and x["top"] == 3 and x["enabled"] is False for x in after), "API: import adds valid rules and keeps their top-billed and on/off settings")
+    r = s.post(base + "/api/rules/import", json={"data": imp_file, "mode": "merge"}).json()
+    check(r["added"] == 0 and r["duplicates"] == 2, "API: importing the same file twice adds no duplicates")
+    check(s.post(base + "/api/rules/import", json={"data": {"hello": 1}, "mode": "merge"}).status_code == 400, "API: import rejects a file that isn't a Phlexerr export")
+    check(s.post(base + "/api/rules/import", json={"data": {"phlexerr": "protect", "rules": [{"type": "title", "pattern": "*"}]}, "mode": "replace"}).status_code == 400 and len(s.get(base + "/api/rules").json()["rules"]) == len(cur0) + 2, "API: a replace with no valid rules is refused and keeps your rules")
+    r = s.post(base + "/api/rules/import", json={"data": imp_file, "mode": "replace"}).json()
+    check(len(s.get(base + "/api/rules").json()["rules"]) == 2, "API: replace mode swaps in only the file's rules")
+    for x in s.get(base + "/api/rules").json()["rules"]:
+        s.post(base + "/api/rules", json={"delete": x["id"]})
+    for x in cur0:
+        s.post(base + "/api/rules", json={"add": {k: x.get(k) for k in ("type", "pattern", "top", "note")}})
+    s.post(base + "/api/keep", json={"ids": [], "keep": False})
     libs = s.get(base + "/api/facets").json()["libraries"]
     check("Movies" in libs, f"facets list libraries {libs}")
     lp = s.post(base + "/api/rules/preview", json={"type": "library", "pattern": "Movies"}).json()
@@ -1132,6 +1159,17 @@ try:
             r = sl.post(bl + "/api/seerr/request", json={"type": "bogus", "tmdb_id": 5}); check(r.status_code == 400, "request API rejects a bad type")
             r = sl.post(bl + "/api/seerr/request", json={"type": "movie", "tmdb_id": "x"}); check(r.status_code == 400, "request API rejects a bad id")
             check(sl.get(bl + "/api/seerr/search?q=a").json() == {"results": []}, "search ignores one-letter queries")
+            # Protect export / import in the UI
+            pgl.click("#tabProt"); pgl.wait_for_selector("#rExport")
+            check(pgl.get_attribute("#rExport", "href") == "/api/rules/export" and pgl.is_visible("#rImport"), "UI: Protect has Export and Import buttons")
+            pgl.set_input_files("#rFile", files=[{"name": "mine.json", "mimeType": "application/json", "buffer": json.dumps({"phlexerr": "protect", "version": 1, "rules": [{"type": "studio", "pattern": "Imported Studio"}], "keep": []}).encode()}])
+            pgl.wait_for_selector("#impMerge")
+            check("1 new rule" in pgl.inner_text("#rImp"), "UI: choosing a file previews what the import would add")
+            pgl.click("#impMerge"); pgl.wait_for_selector("#rList tr:has-text('Imported Studio')")
+            check(not pgl.is_visible("#rImp"), "UI: the import panel closes after importing")
+            pgl.set_input_files("#rFile", files=[{"name": "bad.json", "mimeType": "application/json", "buffer": b"not json"}])
+            pgl.wait_for_selector("#rImp.warn")
+            check("Couldn't read" in pgl.inner_text("#rImp"), "UI: a bad file shows a friendly error")
             pgl.click("#tabMain")
             pgl.click("#btnSettings") if pgl.locator("#btnSettings").count() else pgl.click("text=Settings")
             pgl.wait_for_selector("#s_lv_enabled")
