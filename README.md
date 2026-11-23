@@ -37,21 +37,21 @@ Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built
 
 ## Why Phlexerr
 
-&#9995; **You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
+**You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
 
-&#128269; **Review before you act.** A sortable list or card view with ratings, file sizes, last-watched dates and who requested each title, so you can make the call with the facts in front of you.
+**Review before you act.** A sortable list or card view with ratings, file sizes, last-watched dates and who requested each title, so you can make the call with the facts in front of you.
 
-&#127916; **Tame the request button.** See who requested each title and whether anyone ever pressed play. Prune it, and if they really do want it back later, they can request it again. You can even search and request new titles from inside Phlexerr.
+**Tame the request button.** See who requested each title and whether anyone ever pressed play. Prune it, and if they really do want it back later, they can request it again. You can even search and request new titles from inside Phlexerr.
 
-&#128190; **See the space you win back.** Every selection shows how much it will free before you confirm, and the History tab keeps a running total of what you've reclaimed.
+**See the space you win back.** Every selection shows how much it will free before you confirm, and the History tab keeps a running total of what you've reclaimed.
 
-&#128737;&#65039; **Dry-run by default.** You get an exact report of what *would* happen until you choose to turn deleting on, and that switch can't be flipped from the web page.
+**Dry-run by default.** You get an exact report of what *would* happen until you choose to turn deleting on, and that switch can't be flipped from the web page.
 
-&#128274; **Protection that actually protects.** Lock titles by actor (even top-billed only), director, studio, collection or keyword. Protected titles can't be selected, and the server refuses them even from an old page.
+**Protection that actually protects.** Lock titles by actor (even top-billed only), director, studio, collection or keyword. Protected titles can't be selected, and the server refuses them even from an old page.
 
-&#9203; **Warn people first, only if you want to.** An optional, off-by-default **Leaving Soon** row puts titles you picked on your Plex Home with a date. When the date passes, nothing happens until you delete them.
+**Warn people first, only if you want to.** An optional, off-by-default **Leaving Soon** row puts titles you picked on your Plex Home with a date. When the date passes, nothing happens until you delete them.
 
-&#129529; **Starts with only Plex.** Tautulli, Radarr, Sonarr and Seerr are optional extras, and the app works around any you don't have.
+**Starts with only Plex.** Tautulli, Radarr, Sonarr and Seerr are optional extras, and the app works around any you don't have.
 
 ## A tour
 
