@@ -30,6 +30,8 @@ Born from a simple problem: **your users request everything.** Every "just one m
 
 Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built for people who would rather look first and click the button themselves, with a safety net around every click.
 
+It also brings the tools you already run onto **a single dashboard**: Plex for your library, Tautulli for watch history and who is streaming right now, Radarr and Sonarr for the files behind each title, and Seerr for who requested what. See it all in one place, act on it, and rarely have to leave.
+
 <p align="center">
   <img src="docs/images/prune.png" alt="Prune: review candidates with ratings, sizes, last-watched dates and who requested them" width="100%">
   <br><sub>Prune: see exactly what is worth deleting and how much space you'd get back. (Screenshots use demo data.)</sub>
@@ -37,21 +39,23 @@ Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built
 
 ## Why Phlexerr
 
-&#9995; **You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
+**You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
 
-&#128269; **Review before you act.** A sortable list or card view with ratings, file sizes, last-watched dates and who requested each title, so you can make the call with the facts in front of you.
+**One dashboard for your whole stack.** Plex, Tautulli, Radarr, Sonarr and Seerr come together in one app. Prune from the library view, watch live streams, search and request new titles, and build Plex Home rows without hopping between five tabs.
 
-&#127916; **Tame the request button.** See who requested each title and whether anyone ever pressed play. Prune it, and if they really do want it back later, they can request it again. You can even search and request new titles from inside Phlexerr.
+**Review before you act.** A sortable list or card view with ratings, file sizes, last-watched dates and who requested each title, so you can make the call with the facts in front of you.
 
-&#128190; **See the space you win back.** Every selection shows how much it will free before you confirm, and the History tab keeps a running total of what you've reclaimed.
+**Tame the request button.** See who requested each title and whether anyone ever pressed play. Prune it, and if they really do want it back later, they can request it again. You can even search and request new titles from inside Phlexerr.
 
-&#128737;&#65039; **Dry-run by default.** You get an exact report of what *would* happen until you choose to turn deleting on, and that switch can't be flipped from the web page.
+**See the space you win back.** Every selection shows how much it will free before you confirm, and the History tab keeps a running total of what you've reclaimed.
 
-&#128274; **Protection that actually protects.** Lock titles by actor (even top-billed only), director, studio, collection or keyword. Protected titles can't be selected, and the server refuses them even from an old page.
+**Dry-run by default.** You get an exact report of what *would* happen until you choose to turn deleting on, and that switch can't be flipped from the web page.
 
-&#9203; **Warn people first, only if you want to.** An optional, off-by-default **Leaving Soon** row puts titles you picked on your Plex Home with a date. When the date passes, nothing happens until you delete them.
+**Protection that actually protects.** Lock titles by actor (even top-billed only), director, studio, collection or keyword. Protected titles can't be selected, and the server refuses them even from an old page.
 
-&#129529; **Starts with only Plex.** Tautulli, Radarr, Sonarr and Seerr are optional extras, and the app works around any you don't have.
+**Warn people first, only if you want to.** An optional, off-by-default **Leaving Soon** row puts titles you picked on your Plex Home with a date. When the date passes, nothing happens until you delete them.
+
+**Starts with only Plex.** Tautulli, Radarr, Sonarr and Seerr are optional extras, and the app works around any you don't have.
 
 ## A tour
 
@@ -70,7 +74,7 @@ Most cleanup tools run rules on a schedule and delete for you. Phlexerr is built
 
 These tools overlap a little but solve different problems. Pick by what you want done.
 
-| | **Phlexerr** | [Prunerr](https://github.com/helliott20/prunerr) | Maintainerr | Janitorr | Cleanuparr | Checkrr |
+| | **Phlexerr** | [Prunerr](https://github.com/helliott20/prunerr) | [Maintainerr](https://github.com/Maintainerr/Maintainerr) | [Janitorr](https://github.com/Schaka/janitorr) | [Cleanuparr](https://github.com/Cleanuparr/Cleanuparr) | [Checkrr](https://github.com/aetaric/checkrr) |
 |---|---|---|---|---|---|---|
 | Main job | Review and delete by hand | Rules feed a review queue with grace periods | Rule-based media cleanup | Automatic media cleanup | Clean stalled or failed downloads | Find corrupt media files |
 | Who decides what is deleted | **You, with a review screen** | Rules, then you approve | Rules, on a schedule | Rules, on a schedule | Rules (download queue, not your library) | Reports problems |
@@ -81,7 +85,7 @@ These tools overlap a little but solve different problems. Pick by what you want
 | Custom Plex Home rows | **Yes** | No | Collections | No | No | No |
 | Live "who is watching" and Stop stream | **Yes** (with Tautulli) | No | No | No | No | No |
 | Space-freed history | **Yes** | Storage trends | No | No | No | No |
-| Jellyfin / Emby | No (Plex only) | Yes | Yes (Jellyfin) | Yes | n/a | n/a |
+| Jellyfin / Emby | No (Plex only) | Yes | Yes | Yes (Jellyfin, Emby) | n/a | n/a |
 | Needs Radarr / Sonarr | **No, optional** | Recommended | Optional | Yes | Yes | Optional |
 
 *Based on each project's public description at the time of writing; those projects change, so check their pages before deciding.* They are good at what they do, and they can run alongside Phlexerr. If you want rules and automation, or you don't use Plex, look at them. If you want to see your library, decide, and press the button yourself, use Phlexerr.
@@ -107,7 +111,7 @@ These tools overlap a little but solve different problems. Pick by what you want
 | What | Why | Where it goes |
 |---|---|---|
 | **Docker** | Phlexerr runs as a container | Unraid already has it |
-| **An app password** | Protects the web page | Container setting `APP_PASSWORD`. **Default: `obiwan`** (see below) |
+| **An app password** | Protects the web page | Container setting `APP_PASSWORD`. **Default: `YYZ`** (see below) |
 | **A folder for its data** | Keeps your settings and history between updates | Mapped to `/config` (the template does this for you) |
 | **Plex URL and Plex token** | The library it works on | Settings page (or container settings) |
 
@@ -129,27 +133,27 @@ Pick one.
 ### Unraid (ready-made image)
 
 1. Download `Phlexerr.xml` from this repository and copy it to `/boot/config/plugins/dockerMan/templates-user/` on your server.
-2. Docker tab, **Add Container**, pick **phlexerr** from the template dropdown.
-3. Leave **DRY_RUN** as `true`. The **App password** is pre-filled with the default, `obiwan`, so you can just click Apply to get started. **Change it** before anyone else can reach the page. That is all the container needs. Plex and the optional services are entered on the web page next. Click **Apply**.
-4. Open `http://YOUR-SERVER-IP:8080`, sign in, and Phlexerr will ask for your Plex details.
+2. Docker tab, **Add Container**, pick **Phlexerr** from the template dropdown.
+3. Leave **DRY_RUN** as `true`. The **App password** is pre-filled with the default, `YYZ`, so you can just click Apply to get started. **Change it** before anyone else can reach the page. That is all the container needs. Plex and the optional services are entered on the web page next. Click **Apply**.
+4. Open `http://YOUR-SERVER-IP:2112`, sign in, and Phlexerr will ask for your Plex details.
 
 ### Docker Compose
 
 ```
 git clone https://github.com/Dusza/Phlexerr.git && cd phlexerr
-cp .env.example .env        # optional: set APP_PASSWORD (default is obiwan)
+cp .env.example .env        # optional: set APP_PASSWORD (default is YYZ)
 docker compose up -d --build
 ```
-Open `http://localhost:8080`. Your settings are stored in `./data`.
+Open `http://localhost:2112`. Your settings are stored in `./data`.
 
 ### Docker run
 
 ```
-docker run -d --name phlexerr --restart unless-stopped -p 8080:8080 \
-  -e APP_PASSWORD='choose-a-password' -e DRY_RUN=true   # leave APP_PASSWORD out to use the default, obiwan \
+docker run -d --name phlexerr --restart unless-stopped -p 2112:8080 \
+  -e APP_PASSWORD='choose-a-password' -e DRY_RUN=true \
   -v /path/to/phlexerr-data:/config ghcr.io/dusza/phlexerr:latest
 ```
-The container runs as user `99:100`. If the data folder isn't writable, run `chown 99:100 /path/to/phlexerr-data`.
+Leave out the `APP_PASSWORD` line to use the default password, `YYZ`. The container runs as user `99:100`. If the data folder isn't writable, run `chown 99:100 /path/to/phlexerr-data`.
 
 ### Build it yourself instead
 
@@ -160,7 +164,7 @@ Then use `phlexerr:latest` as the image name in the commands above (on Unraid, e
 
 ## First-run setup
 
-1. Open the web page and sign in. If you didn't set one, the password is **`obiwan`**.
+1. Open the web page and sign in. If you didn't set one, the password is **`YYZ`**.
 2. Click **Settings** and enter the **Plex URL and token**. Everything else is optional (Tautulli, Radarr, Sonarr, Seerr). Each one has a **Test connection** button. **Leaving Soon** is also optional and off until you enable it.
 3. Click **Save & refresh data**. The first refresh reads your whole library and can take a few minutes.
 4. Browse **Prune**. Nothing is deleted while the **DRY RUN** badge is showing.
@@ -180,7 +184,7 @@ Keys entered on the Settings page are saved in `settings.json` in your data fold
 
 ## Safety
 
-- **Change the default password.** Phlexerr starts with the password `obiwan` so the first install is quick, and it shows a warning banner until you set your own. Never expose it to the internet with the default.
+- **Change the default password.** Phlexerr starts with the password `YYZ` so the first install is quick, and it shows a warning banner until you set your own. Never expose it to the internet with the default.
 - **Dry-run is on by default.** It can only be switched off with `DRY_RUN=false` on the container, never from the web page, so a stolen login can't turn on deleting.
 - **Nothing is ever deleted automatically.** There are no schedules. Even the optional Leaving Soon row only *labels* titles; when a date passes, the title stays until you delete it.
 - Real deletes need you to type `DELETE` in a dialog that lists every item and the space it will free.
@@ -210,7 +214,7 @@ Everything below can be set as an environment variable. Service URLs and keys ca
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `APP_PASSWORD` | `obiwan` | Password for the web page. **Change it.** The app shows a warning banner while the default is in use |
+| `APP_PASSWORD` | `YYZ` | Password for the web page. **Change it.** The app shows a warning banner while the default is in use |
 | `DRY_RUN` | `true` | Nothing is deleted while true |
 | `PLEX_URL`, `PLEX_TOKEN` | | Plex (required, but can be set in Settings) |
 | `TAUTULLI_URL`, `TAUTULLI_API_KEY` | | Optional |

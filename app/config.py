@@ -20,7 +20,7 @@ def _i(name, default):
         return default
 
 
-DEFAULT_PASSWORD = "obiwan"   # used only when APP_PASSWORD is not set, so a first install works straight away
+DEFAULT_PASSWORD = "YYZ"   # used only when APP_PASSWORD is not set, so a first install works straight away
 
 
 class Config:
