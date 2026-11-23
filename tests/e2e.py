@@ -114,12 +114,12 @@ try:
     check(requests.get(base + "/", allow_redirects=False).status_code == 302, "UI redirects to /login")
     check(requests.get(base + "/healthz").text == "ok", "healthz open")
     s = session(base)
-    # default password: unset APP_PASSWORD -> "obiwan", flagged; a chosen one is not flagged
+    # default password: unset APP_PASSWORD -> "YYZ", flagged; a chosen one is not flagged
     pw_env = {**os.environ, "CONFIG_DIR": tempfile.mkdtemp()}; pw_env.pop("APP_PASSWORD", None)
     pp = subprocess.Popen([sys.executable, "-m", "gunicorn", "-w", "1", "-b", "127.0.0.1:8088", "app.main:app"], cwd=ROOT, env=pw_env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     procs.append(pp); wait("http://127.0.0.1:8088/healthz")
     sd = session("http://127.0.0.1:8088")
-    check(sd.post("http://127.0.0.1:8088/login", data={"password": "obiwan"}, allow_redirects=False).status_code == 302, "default password obiwan logs in")
+    check(sd.post("http://127.0.0.1:8088/login", data={"password": "YYZ"}, allow_redirects=False).status_code == 302, "default password YYZ logs in")
     check(sd.get("http://127.0.0.1:8088/api/config").json().get("default_password") is True, "default password is flagged")
     r = s.post(base + "/login", data={"password": "wrong"})
     check(r.status_code == 401, "wrong password rejected")
