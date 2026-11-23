@@ -129,7 +129,7 @@ Pick one.
 ### Unraid (ready-made image)
 
 1. Download `Phlexerr.xml` from this repository and copy it to `/boot/config/plugins/dockerMan/templates-user/` on your server.
-2. Docker tab, **Add Container**, pick **phlexerr** from the template dropdown.
+2. Docker tab, **Add Container**, pick **Phlexerr** from the template dropdown.
 3. Leave **DRY_RUN** as `true`. The **App password** is pre-filled with the default, `obiwan`, so you can just click Apply to get started. **Change it** before anyone else can reach the page. That is all the container needs. Plex and the optional services are entered on the web page next. Click **Apply**.
 4. Open `http://YOUR-SERVER-IP:8080`, sign in, and Phlexerr will ask for your Plex details.
 
