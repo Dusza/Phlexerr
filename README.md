@@ -131,7 +131,7 @@ Pick one.
 1. Download `Phlexerr.xml` from this repository and copy it to `/boot/config/plugins/dockerMan/templates-user/` on your server.
 2. Docker tab, **Add Container**, pick **Phlexerr** from the template dropdown.
 3. Leave **DRY_RUN** as `true`. The **App password** is pre-filled with the default, `obiwan`, so you can just click Apply to get started. **Change it** before anyone else can reach the page. That is all the container needs. Plex and the optional services are entered on the web page next. Click **Apply**.
-4. Open `http://YOUR-SERVER-IP:8432`, sign in, and Phlexerr will ask for your Plex details.
+4. Open `http://YOUR-SERVER-IP:2112`, sign in, and Phlexerr will ask for your Plex details.
 
 ### Docker Compose
 
@@ -140,12 +140,12 @@ git clone https://github.com/Dusza/Phlexerr.git && cd phlexerr
 cp .env.example .env        # optional: set APP_PASSWORD (default is obiwan)
 docker compose up -d --build
 ```
-Open `http://localhost:8432`. Your settings are stored in `./data`.
+Open `http://localhost:2112`. Your settings are stored in `./data`.
 
 ### Docker run
 
 ```
-docker run -d --name phlexerr --restart unless-stopped -p 8432:8080 \
+docker run -d --name phlexerr --restart unless-stopped -p 2112:8080 \
   -e APP_PASSWORD='choose-a-password' -e DRY_RUN=true   # leave APP_PASSWORD out to use the default, obiwan \
   -v /path/to/phlexerr-data:/config ghcr.io/dusza/phlexerr:latest
 ```

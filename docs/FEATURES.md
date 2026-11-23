@@ -122,7 +122,7 @@ Tautulli only knows plays since it was installed, so older items may show 0 play
 The app has its own password login, throttling and CSRF protection, but this tool can delete files, so add a second layer:
 
 1. Set `COOKIE_SECURE=true` and `TRUST_PROXY=true` on the container.
-2. Point the tunnel at `http://SERVER-IP:8432`.
+2. Point the tunnel at `http://SERVER-IP:2112`.
 3. **Put Cloudflare Access (Zero Trust) in front of the hostname**, limited to your email, so strangers never reach the login page.
 4. Keep `DRY_RUN=true` unless you're actively cleaning up.
 
