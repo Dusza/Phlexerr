@@ -37,6 +37,29 @@ It also brings the tools you already run onto **a single dashboard**: Plex for y
   <br><sub>Prune: see exactly what is worth deleting and how much space you'd get back. (Screenshots use demo data.)</sub>
 </p>
 
+## Your Plex Home, your way
+
+Cleaning up is half the story. Phlexerr also lets you **design the rows on your Plex Home screen**, so the best of your library is the first thing everyone sees.
+
+<p align="center">
+  <img src="docs/images/plex-home.png" alt="Plex Home Screen tab: build custom rows from criteria or lists and keep them in sync" width="100%">
+</p>
+
+- **Build any row you can imagine.** Pick by actor, director, studio, collection, genre, tag or title keyword, then narrow by rating, recently added or never watched. Sort it by date added, rating, year, times watched, or shuffled.
+- **Follow a list.** Paste an IMDb or MDBList link (or upload a CSV) and the row holds the titles from that list you already have in Plex. It updates as the list changes.
+- **Request what is missing.** For a list-based row, see the titles you don't have, check each against Seerr, and request the ones you want in one click.
+- **"Released on this day."** A built-in nostalgia row of movies whose release anniversary is today, with your own timeframe, minimum rating and genres.
+- **Your own order.** Drag titles into any sequence, for example a story timeline, and Phlexerr writes that order into the Plex collection.
+- **Everyone sees it.** Rows are pinned to Home and can also show on other users' Home screens. They re-sync after every refresh, in the order you choose.
+- **Safe by design.** This only creates and edits Plex collections. It never deletes media.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/missing.png" alt="Titles on a list that are not in Plex yet, with Seerr status and a Request button"><br><b>Request what is missing.</b> See which titles from a list aren't in Plex, check each against Seerr, and request them in one go.</td>
+    <td width="50%"><img src="docs/images/arrange.png" alt="Arrange titles screen with drag handles and position numbers"><br><b>Your own order.</b> Drag titles into any sequence, such as a story timeline, and it is written into the Plex collection.</td>
+  </tr>
+</table>
+
 ## Why Phlexerr
 
 **You are always the one who deletes.** No schedules, no background deletions, no "the rule matched at 3 a.m." surprises. Every delete is a button you pressed.
@@ -68,6 +91,10 @@ It also brings the tools you already run onto **a single dashboard**: Plex for y
     <td width="50%"><img src="docs/images/activity.png" alt="Activity tab with live now-playing cards"><br><b>Activity</b><br>Live "now playing" cards, a full watch history, and a Stop button (with an optional message to the viewer). Needs Tautulli.</td>
     <td width="50%"><img src="docs/images/protect.png" alt="Protect tab with protection rules"><br><b>Protect</b><br>Lock favorites by actor, director, studio, collection or keyword so they can never be selected.</td>
   </tr>
+  <tr>
+    <td width="50%"><img src="docs/images/leaving-soon.png" alt="Prune list with Leaving Soon badges showing a date"><br><b>Leaving Soon (optional)</b><br>Mark titles with a date and, if you turn it on, they appear as a row on your Plex Home. Nothing is deleted when the date passes. You decide.</td>
+    <td width="50%"><img src="docs/images/phone.png" alt="Phlexerr on a phone" width="240"><br><b>On your phone</b><br>The whole app works on a phone, so you can prune from the couch.</td>
+  </tr>
 </table>
 
 ### How it compares
@@ -94,7 +121,7 @@ These tools overlap a little but solve different problems. Pick by what you want
 
 - **Prune:** find movies and shows worth deleting (never watched, stale, low rated, large, unrequested downloads) and delete them, optionally cleaning up Radarr, Sonarr and Seerr at the same time.
 - **Protect:** lock titles so they can never be deleted. Export your rules to a file and import them on another server or after a reinstall.
-- **Plex Home Screen:** build your own Home rows from criteria or IMDb/MDBList lists, and request what's missing through Seerr.
+- **Plex Home Screen:** build your own Home rows from criteria or IMDb/MDBList lists, add a daily "Released on this day" row, put titles in your own order, and request what's missing through Seerr.
 - **Request:** search for any movie or show and request it through Seerr, with live status badges (needs Seerr).
 - **Activity:** live "now playing" cards, a full watch history, and a Stop button for a stream (needs Tautulli).
 - **History:** everything deleted, and the space freed.
