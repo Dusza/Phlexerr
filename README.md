@@ -4,7 +4,8 @@
 
 <p align="center">
   <b>Pronounced "flex-er"</b> (Plex + "ph" + "err")<br>
-  <i>Review what is worth deleting. You decide. Nothing is removed on a timer or behind your back.</i>
+  <i>Review what is worth deleting. You decide. Nothing is removed on a timer or behind your back.</i><br>
+  <i>One dashboard for your whole stack, plus custom Plex Home rows you design yourself.</i>
 </p>
 
 <p align="center">
