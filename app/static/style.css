@@ -525,3 +525,4 @@ body:not(.has-leaving) .needs-leaving { display: none !important; }
 .reqact .badge[data-state=available]{background:#1f6f43;color:#fff}.reqact .badge[data-state=partial]{background:#2f7d5b;color:#fff}
 .reqact .badge[data-state=processing]{background:#6b4fbb;color:#fff}.reqact .badge[data-state=pending]{background:#b88a12;color:#fff}.reqact .badge[data-state=blocklisted]{background:#a33;color:#fff}
 .rtools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+dialog.wide { width: min(1020px, calc(100vw - 24px)); }
