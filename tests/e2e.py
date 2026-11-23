@@ -617,6 +617,7 @@ try:
     check(s.get(base + "/api/plexthumb", params={"img": "/library/metadata/102/thumb/1"}).headers.get("Content-Type", "").startswith("image/") and s.get(base + "/api/plexthumb", params={"img": "http://evil/x"}).status_code == 404, "API: /api/plexthumb proxies posters and rejects other URLs")
     check(a["sessions"][1]["avatar"].startswith("https://plex.tv/users/") and s.get(base + "/api/plexthumb", params={"img": a["sessions"][1]["avatar"], "avatar": "1"}).headers.get("Content-Type", "").startswith("image/"), "API: avatar falls back to Tautulli's user list and proxies")
     check(len(a["sessions"]) == 2 and a["sessions"][0]["user"] == "bob" and "ip_address" not in a["sessions"][0], "API: /api/activity returns streams")
+    check(any(x["se"] == "S1 · E3" for x in a["sessions"] if x["type"] == "episode") and all(x["se"] == "" for x in a["sessions"] if x["type"] != "episode"), "API: now-playing episodes carry season and episode")
     pl = s.get(base + "/api/plays", params={"user": "alice", "type": "episode", "length": 3}).json()
     check(pl["total"] >= 5 and len(pl["plays"]) == 3 and all(p["user"] == "alice" for p in pl["plays"]) and "alice" in pl["users"], "API: /api/plays filters and pages")
     check(s.get(base + "/api/plays", params={"q": "zzzznomatch"}).json()["total"] == 0, "API: /api/plays search")
